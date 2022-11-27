@@ -87,7 +87,7 @@ public class ScrollHandler extends Group {
         }
     }
 
-    public boolean collides(Spacecraft nau) {
+    public boolean collides(KillerSanta nau) {
 
         // Comprovem les col·lisions entre cada asteroid i la nau
         for (Asteroid asteroid : asteroids) {

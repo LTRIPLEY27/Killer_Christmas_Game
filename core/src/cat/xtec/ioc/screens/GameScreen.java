@@ -3,16 +3,11 @@ package cat.xtec.ioc.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.ArrayList;
@@ -21,7 +16,7 @@ import cat.xtec.ioc.helpers.AssetManager;
 import cat.xtec.ioc.helpers.InputHandler;
 import cat.xtec.ioc.objects.Asteroid;
 import cat.xtec.ioc.objects.ScrollHandler;
-import cat.xtec.ioc.objects.Spacecraft;
+import cat.xtec.ioc.objects.KillerSanta;
 import cat.xtec.ioc.utils.Settings;
 
 
@@ -32,7 +27,7 @@ public class GameScreen implements Screen {
 
     public enum GameState {
 
-        READY, RUNNING, GAMEOVER
+        READY, RUNNING, GAMEOVER, FIRE
 
     }
 
@@ -40,7 +35,7 @@ public class GameScreen implements Screen {
 
     // Objectes necessaris
     private Stage stage;
-    private Spacecraft spacecraft;
+    private KillerSanta santa;
     private ScrollHandler scrollHandler;
 
     // Encarregats de dibuixar elements per pantalla
@@ -69,18 +64,20 @@ public class GameScreen implements Screen {
         batch = stage.getBatch();
 
         // Creem la nau i la resta d'objectes
-        spacecraft = new Spacecraft(Settings.SPACECRAFT_STARTX, Settings.SPACECRAFT_STARTY, Settings.SPACECRAFT_WIDTH, Settings.SPACECRAFT_HEIGHT);
+        santa = new KillerSanta(Settings.SPACECRAFT_STARTX, Settings.SPACECRAFT_STARTY, Settings.SPACECRAFT_WIDTH, Settings.SPACECRAFT_HEIGHT);
         scrollHandler = new ScrollHandler();
 
         // Afegim els actors a l'stage
         stage.addActor(scrollHandler);
-        stage.addActor(spacecraft);
+        //stage.addActor(spacecraft);
+        stage.addActor(santa);
         // Donem nom a l'Actor
-        spacecraft.setName("spacecraft");
+        //spacecraft.setName("spacecraft");
+        santa.setName("santa");
 
         // Iniciem el GlyphLayout
         textLayout = new GlyphLayout();
-        textLayout.setText(AssetManager.font, "Are you\nready?");
+        textLayout.setText(AssetManager.font, "Are you\nready to run for your life?");
 
         currentState = GameState.READY;
 
@@ -105,7 +102,7 @@ public class GameScreen implements Screen {
         shapeRenderer.setColor(new Color(0, 1, 0, 1));
 
         // Pintem la nau
-        shapeRenderer.rect(spacecraft.getX(), spacecraft.getY(), spacecraft.getWidth(), spacecraft.getHeight());
+        shapeRenderer.rect(santa.getX(), santa.getY(), santa.getWidth(), santa.getHeight());
 
         // Recollim tots els Asteroid
         ArrayList<Asteroid> asteroids = scrollHandler.getAsteroids();
@@ -178,10 +175,11 @@ public class GameScreen implements Screen {
     private void updateRunning(float delta) {
         stage.act(delta);
 
-        if (scrollHandler.collides(spacecraft)) {
+        if (scrollHandler.collides(santa)) {
             // Si hi ha hagut col·lisió: Reproduïm l'explosió i posem l'estat a GameOver
             AssetManager.explosionSound.play();
-            stage.getRoot().findActor("spacecraft").remove();
+            //stage.getRoot().findActor("santa").remove();
+            stage.getRoot().findActor("santa").remove();
             textLayout.setText(AssetManager.font, "Game Over :'(");
             currentState = GameState.GAMEOVER;
         }
@@ -193,7 +191,7 @@ public class GameScreen implements Screen {
         batch.begin();
         AssetManager.font.draw(batch, textLayout, (Settings.GAME_WIDTH - textLayout.width) / 2, (Settings.GAME_HEIGHT - textLayout.height) / 2);
         // Si hi ha hagut col·lisió: Reproduïm l'explosió i posem l'estat a GameOver
-        batch.draw((TextureRegion) AssetManager.explosionAnim.getKeyFrame(explosionTime, false), (spacecraft.getX() + spacecraft.getWidth() / 2) - 32, spacecraft.getY() + spacecraft.getHeight() / 2 - 32, 64, 64);
+        batch.draw((TextureRegion) AssetManager.explosionAnim.getKeyFrame(explosionTime, false), (santa.getX() + santa.getWidth() / 2) - 32, santa.getY() + santa.getHeight() / 2 - 32, 64, 64);
         batch.end();
 
         explosionTime += delta;
@@ -203,16 +201,16 @@ public class GameScreen implements Screen {
     public void reset() {
 
         // Posem el text d'inici
-        textLayout.setText(AssetManager.font, "Are you\nready?");
+        textLayout.setText(AssetManager.font, "Are you\nready to run for your life?");
         // Cridem als restart dels elements.
-        spacecraft.reset();
+        santa.reset();
         scrollHandler.reset();
 
         // Posem l'estat a 'Ready'
         currentState = GameState.READY;
 
         // Afegim la nau a l'stage
-        stage.addActor(spacecraft);
+        stage.addActor(santa);
 
         // Posem a 0 les variables per controlar el temps jugat i l'animació de l'explosió
         explosionTime = 0.0f;
@@ -245,8 +243,8 @@ public class GameScreen implements Screen {
 
     }
 
-    public Spacecraft getSpacecraft() {
-        return spacecraft;
+    public KillerSanta getSpacecraft() {
+        return santa;
     }
 
     public Stage getStage() {

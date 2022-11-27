@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
-import cat.xtec.ioc.objects.Spacecraft;
+import cat.xtec.ioc.objects.KillerSanta;
 import cat.xtec.ioc.screens.GameScreen;
 
 public class InputHandler implements InputProcessor {
@@ -14,7 +14,7 @@ public class InputHandler implements InputProcessor {
     // Enter per a la gesitó del moviment d'arrastrar
     int previousY = 0;
     // Objectes necessaris
-    private Spacecraft spacecraft;
+    private KillerSanta spacecraft;
     private GameScreen screen;
     private Vector2 stageCoord;
 

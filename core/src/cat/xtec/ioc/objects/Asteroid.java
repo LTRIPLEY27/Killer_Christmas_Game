@@ -29,7 +29,8 @@ public class Asteroid extends Scrollable {
 
         /* Accions */
         r = new Random();
-        assetAsteroid = r.nextInt(15);
+        //assetAsteroid = r.nextInt(15);
+        assetAsteroid = r.nextInt(3);
 
         setOrigin();
 
@@ -76,7 +77,8 @@ public class Asteroid extends Scrollable {
         // La posició serà un valor aleatòri entre 0 i l'alçada de l'aplicació menys l'alçada
         position.y =  new Random().nextInt(Settings.GAME_HEIGHT - (int) height);
 
-        assetAsteroid = r.nextInt(15);
+        //assetAsteroid = r.nextInt(15);
+        assetAsteroid = r.nextInt(3);
         setOrigin();
     }
 
@@ -84,11 +86,11 @@ public class Asteroid extends Scrollable {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
-        batch.draw(AssetManager.asteroid[assetAsteroid], position.x, position.y, this.getOriginX(), this.getOriginY(), width, height, this.getScaleX(), this.getScaleY(), this.getRotation());
+        batch.draw(AssetManager.zombies[assetAsteroid], position.x, position.y, this.getOriginX(), this.getOriginY(), width, height, this.getScaleX(), this.getScaleY(), this.getRotation());
     }
 
     // Retorna true si hi ha col·lisió
-    public boolean collides(Spacecraft nau) {
+    public boolean collides(KillerSanta nau) {
 
         if (position.x <= nau.getX() + nau.getWidth()) {
             // Comprovem si han col·lisionat sempre i quan l'asteroid estigui a la mateixa alçada que la spacecraft
