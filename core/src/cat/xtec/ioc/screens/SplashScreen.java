@@ -47,7 +47,7 @@ public class SplashScreen implements Screen {
 
         // Creem l'estil de l'etiqueta i l'etiqueta
         textStyle = new Label.LabelStyle(AssetManager.font, null);
-        textLbl = new Label("SpaceRace", textStyle);
+        textLbl = new Label("Zombie's Christmas Carol", textStyle);
 
         // Creem el contenidor necessari per aplicar-li les accions
         Container container = new Container(textLbl);

@@ -7,12 +7,17 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class AssetManager {
 
     // Sprite Sheet
     public static Texture sheet;
+
+    //public  static TextureAtlas atlas;
+
+    //public static Animation <Sprite> run;
 
     // CAMBIO DE VARIABLES SEGÚN EL ENUNCIADO
     // Nau i fons
@@ -46,37 +51,55 @@ public class AssetManager {
         sheet.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
 
         // Sprites de la nau
-        //spacecraft = new TextureRegion(sheet, 0, 0, 36, 15);
-        santa = new TextureRegion(sheet, 0, 566, 113, 120); // -- ok
+        santa = new TextureRegion(sheet, 785, 48, 90, 120); // -- ok
         santa.flip(false, true);
 
-        //spacecraftUp = new TextureRegion(sheet, 36, 0, 36, 15);
-        santaUp = new TextureRegion(sheet, 217, 566, 180, 180); // -- ok
+        santaUp = new TextureRegion(sheet, 375, 44, 104, 136); // -- ok
         santaUp.flip(false, true);
 
-        //spacecraftDown = new TextureRegion(sheet, 72, 0, 36, 15);
-        santaDown = new TextureRegion(sheet, 397, 566, 180, 180); // ok
+        santaDown = new TextureRegion(sheet, 478, 43, 90, 125); // ok
         santaDown.flip(false, true);
 
+        //****************  ejercicio 2 fire
 
         // BOLA DE ZOMBIES
-        fire = new TextureRegion(sheet, 768, 0, 180, 180);
+        fire = new TextureRegion(sheet, 1285, 1298, 35, 32);
         fire.flip(false, true);
+
+
+        // with atlas
+        //atlas = new TextureAtlas(Gdx.files.internal("SHEET_IMAGE.atlas"));
+
 
         // Carreguem els 16 estats de l'asteroid
         //asteroid = new TextureRegion[16];
-        zombies = new TextureRegion[4];
-        for (int i = 0; i < zombies.length; i++) {
+        zombies = new TextureRegion[8];
 
-            zombies[i] = new TextureRegion(sheet, i * 577, 566, 300, 300);
+        zombies[0] = new TextureRegion(sheet, 2, 187, 272, 283);
+        zombies[1] = new TextureRegion(sheet, 2, 472, 273, 290);
+        zombies[2] = new TextureRegion(sheet, 277, 470, 256, 292);
+        zombies[3] = new TextureRegion(sheet, 1030, 738, 234, 292);
+        zombies[4] = new TextureRegion(sheet, 1026, 147, 221, 293);
+        zombies[5] = new TextureRegion(sheet, 785, 475, 199, 298);
+        zombies[6] = new TextureRegion(sheet, 791, 176, 233, 297);
+        zombies[7] = new TextureRegion(sheet, 1026, 442, 231, 294);
+        //for (int i = 0; i < zombies.length; i++) {
 
-        }
+
+        //}
 
 
+
+        //
 
         // Creem l'animació de l'asteroid i fem que s'executi contínuament en sentit anti-horari
-        zombie = new Animation(0.08f, zombies);
-        zombie.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+
+        for(int i = 0; i < zombies.length; i++){
+            zombie = new Animation(0.04f, zombies);
+            zombie.setPlayMode(Animation.PlayMode.LOOP);
+        }
+        //zombie = new Animation(0.04f, zombies);
+        //zombie.setPlayMode(Animation.PlayMode.LOOP);
 
         // Creem els 16 estats de l'explosió
         //explosion = new TextureRegion[4];
@@ -86,8 +109,7 @@ public class AssetManager {
         int index = 0;
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 8; j++) {
-                //explosion[index++] = new TextureRegion(sheet, j * 64,  i * 64 + 49, 64, 64);
-                explosion[index++] = new TextureRegion(sheet, j * 768,  i * 35 + 40, 150, 150);
+                explosion[index++] = new TextureRegion(sheet, j * 678,  i * 63 + 40, 105, 105);
             }
         }
 
@@ -96,7 +118,7 @@ public class AssetManager {
 
         // Fons de pantalla
         //background = new TextureRegion(sheet1, 0, 177, 480, 135);
-        background = new TextureRegion(sheet, 0, 0, 768, 566);
+        background = new TextureRegion(sheet, 2, 764, 768, 566);
         background.flip(false, true);  // da la vuelta al fondo
 
         /******************************* Sounds *************************************/
@@ -128,7 +150,7 @@ public class AssetManager {
         sheet.dispose();
         explosionSound.dispose();
         music.dispose();
-
+        //atlas.dispose();
 
     }
 }

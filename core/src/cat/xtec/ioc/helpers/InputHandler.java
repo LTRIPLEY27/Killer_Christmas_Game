@@ -59,7 +59,15 @@ public class InputHandler implements InputProcessor {
                 stageCoord = stage.screenToStageCoordinates(new Vector2(screenX, screenY));
                 Actor actorHit = stage.hit(stageCoord.x, stageCoord.y, true);
                 if (actorHit != null) {
-                    Gdx.app.log("HIT", actorHit.getName());
+
+                    switch (actorHit.getName()){
+                        case "spacecraft":
+                            break;
+                        case "fire":
+                            screen.setCurrentState(GameScreen.GameState.FIRE);
+                            break;
+                    }
+                   // Gdx.app.log("HIT", actorHit.getName());
 
                 }
                 break;
