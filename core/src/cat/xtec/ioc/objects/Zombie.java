@@ -1,6 +1,7 @@
 package cat.xtec.ioc.objects;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction;
@@ -13,7 +14,7 @@ import cat.xtec.ioc.helpers.AssetManager;
 import cat.xtec.ioc.utils.Methods;
 import cat.xtec.ioc.utils.Settings;
 
-public class Asteroid extends Scrollable {
+public class Zombie extends Scrollable {
 
     private Circle collisionCircle;
 
@@ -21,7 +22,9 @@ public class Asteroid extends Scrollable {
 
     int assetAsteroid;
 
-    public Asteroid(float x, float y, float width, float height, float velocity) {
+    private float runTime = 0;  // uso de la animation
+
+    public Zombie(float x, float y, float width, float height, float velocity) {
         super(x, y, width, height, velocity);
 
         // Creem el cercle
@@ -63,8 +66,7 @@ public class Asteroid extends Scrollable {
 
         // Actualitzem el cercle de col·lisions (punt central de l'asteroid i el radi.
         collisionCircle.set(position.x + width / 2.0f, position.y + width / 2.0f, width / 2.0f);
-
-
+        runTime += delta; // aumenta el runtime
     }
 
     @Override
@@ -86,7 +88,8 @@ public class Asteroid extends Scrollable {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
-        batch.draw(AssetManager.zombies[assetAsteroid], position.x, position.y, this.getOriginX(), this.getOriginY(), width, height, this.getScaleX(), this.getScaleY(), this.getRotation());
+        // llamado a la animation con el runtime
+        batch.draw((TextureRegion) AssetManager.zombie.getKeyFrame(runTime, true), this.position.x, this.position.y, width, height);
     }
 
     // Retorna true si hi ha col·lisió
@@ -96,6 +99,21 @@ public class Asteroid extends Scrollable {
             // Comprovem si han col·lisionat sempre i quan l'asteroid estigui a la mateixa alçada que la spacecraft
             return (Intersector.overlaps(collisionCircle, nau.getCollisionRect()));
         }
+        return false;
+    }
+
+    // SOBREESCRITURA DEL MÉTODO PARA HACER COLISIÓN CON EL FUEGO
+
+    public Circle getCollisionCircle() {
+        return collisionCircle;
+    }
+
+    public  boolean collides(Fire fire){
+
+        if(position.x <= fire.getX() + fire.getWidth()){
+            return (Intersector.overlaps(collisionCircle, fire.getAttack()));
+        }
+
         return false;
     }
 

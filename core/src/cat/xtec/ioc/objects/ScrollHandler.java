@@ -15,7 +15,7 @@ public class ScrollHandler extends Group {
 
     // Asteroides
     int numAsteroids;
-    private ArrayList<Asteroid> asteroids;
+    private ArrayList<Zombie> zombies;
 
     // Objecte Random
     Random r;
@@ -34,30 +34,30 @@ public class ScrollHandler extends Group {
         // Creem l'objecte random
         r = new Random();
 
-        // Comencem amb 3 asteroids
+        // Comencem amb 3 zombies
         numAsteroids = 3;
 
         // Creem l'ArrayList
-        asteroids = new ArrayList<Asteroid>();
+        zombies = new ArrayList<Zombie>();
 
         // Definim una mida aleatòria entre el mínim i el màxim
         float newSize = Methods.randomFloat(Settings.MIN_ASTEROID, Settings.MAX_ASTEROID) * 34;
 
-        // Afegim el primer Asteroid a l'Array i al grup
-        Asteroid asteroid = new Asteroid(Settings.GAME_WIDTH, r.nextInt(Settings.GAME_HEIGHT - (int) newSize), newSize, newSize, Settings.ASTEROID_SPEED);
-        asteroids.add(asteroid);
-        addActor(asteroid);
+        // Afegim el primer Zombie a l'Array i al grup
+        Zombie zombie = new Zombie(Settings.GAME_WIDTH, r.nextInt(Settings.GAME_HEIGHT - (int) newSize), newSize, newSize, Settings.ASTEROID_SPEED);
+        zombies.add(zombie);
+        addActor(zombie);
 
         // Des del segon fins l'últim asteroide
         for (int i = 1; i < numAsteroids; i++) {
             // Creem la mida al·leatòria
             newSize = Methods.randomFloat(Settings.MIN_ASTEROID, Settings.MAX_ASTEROID) * 34;
-            // Afegim l'asteroid.
-            asteroid = new Asteroid(asteroids.get(asteroids.size() - 1).getTailX() + Settings.ASTEROID_GAP, r.nextInt(Settings.GAME_HEIGHT - (int) newSize), newSize, newSize, Settings.ASTEROID_SPEED);
+            // Afegim l'zombie.
+            zombie = new Zombie(zombies.get(zombies.size() - 1).getTailX() + Settings.ASTEROID_GAP, r.nextInt(Settings.GAME_HEIGHT - (int) newSize), newSize, newSize, Settings.ASTEROID_SPEED);
             // Afegim l'asteroide a l'ArrayList
-            asteroids.add(asteroid);
+            zombies.add(zombie);
             // Afegim l'asteroide al grup d'actors
-            addActor(asteroid);
+            addActor(zombie);
         }
 
     }
@@ -74,14 +74,14 @@ public class ScrollHandler extends Group {
 
         }
 
-        for (int i = 0; i < asteroids.size(); i++) {
+        for (int i = 0; i < zombies.size(); i++) {
 
-            Asteroid asteroid = asteroids.get(i);
-            if (asteroid.isLeftOfScreen()) {
+            Zombie zombie = zombies.get(i);
+            if (zombie.isLeftOfScreen()) {
                 if (i == 0) {
-                    asteroid.reset(asteroids.get(asteroids.size() - 1).getTailX() + Settings.ASTEROID_GAP);
+                    zombie.reset(zombies.get(zombies.size() - 1).getTailX() + Settings.ASTEROID_GAP);
                 } else {
-                    asteroid.reset(asteroids.get(i - 1).getTailX() + Settings.ASTEROID_GAP);
+                    zombie.reset(zombies.get(i - 1).getTailX() + Settings.ASTEROID_GAP);
                 }
             }
         }
@@ -90,27 +90,45 @@ public class ScrollHandler extends Group {
     public boolean collides(KillerSanta nau) {
 
         // Comprovem les col·lisions entre cada asteroid i la nau
-        for (Asteroid asteroid : asteroids) {
-            if (asteroid.collides(nau)) {
+        for (Zombie zombie : zombies) {
+            if (zombie.collides(nau)) {
                 return true;
             }
         }
         return false;
     }
 
+    // colisión del zombie y el fuego
+    //**********
+    public Zombie collides(Fire fire){
+
+        for(Zombie i : zombies){
+            if(i.collides(fire)){
+                return i;
+            }
+        }
+
+        return null;
+    }
+
     public void reset() {
 
         // Posem el primer asteroid fora de la pantalla per la dreta
-        asteroids.get(0).reset(Settings.GAME_WIDTH);
-        // Calculem les noves posicions de la resta d'asteroids.
-        for (int i = 1; i < asteroids.size(); i++) {
+        zombies.get(0).reset(Settings.GAME_WIDTH);
+        // Calculem les noves posicions de la resta d'zombies.
+        for (int i = 1; i < zombies.size(); i++) {
 
-            asteroids.get(i).reset(asteroids.get(i - 1).getTailX() + Settings.ASTEROID_GAP);
+            zombies.get(i).reset(zombies.get(i - 1).getTailX() + Settings.ASTEROID_GAP);
 
         }
     }
 
-    public ArrayList<Asteroid> getAsteroids() {
-        return asteroids;
+    public void killerZombie(Zombie zombie){
+        zombies.remove(zombie);
+        zombie.remove();
+    }
+
+    public ArrayList<Zombie> getAsteroids() {
+        return zombies;
     }
 }

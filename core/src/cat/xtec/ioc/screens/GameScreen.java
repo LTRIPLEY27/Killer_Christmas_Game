@@ -3,6 +3,7 @@ package cat.xtec.ioc.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -10,13 +11,17 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+
 import java.util.ArrayList;
 
 import cat.xtec.ioc.helpers.AssetManager;
 import cat.xtec.ioc.helpers.InputHandler;
-import cat.xtec.ioc.objects.Asteroid;
+
+import cat.xtec.ioc.objects.Explosion;
+import cat.xtec.ioc.objects.Fire;
 import cat.xtec.ioc.objects.ScrollHandler;
 import cat.xtec.ioc.objects.KillerSanta;
+import cat.xtec.ioc.objects.Zombie;
 import cat.xtec.ioc.utils.Settings;
 
 
@@ -48,7 +53,9 @@ public class GameScreen implements Screen {
     // Preparem el textLayout per escriure text
     private GlyphLayout textLayout;
 
+    private ArrayList <Fire> fires;
 
+    private ArrayList<Explosion> explosion;
 
     public GameScreen(Batch prevBatch, Viewport prevViewport) {
 
@@ -74,6 +81,9 @@ public class GameScreen implements Screen {
         // Donem nom a l'Actor
         //spacecraft.setName("spacecraft");
         santa.setName("santa");
+
+        fires = new ArrayList<Fire>();
+        explosion = new ArrayList<Explosion>();
 
         // Iniciem el GlyphLayout
         textLayout = new GlyphLayout();
@@ -105,12 +115,12 @@ public class GameScreen implements Screen {
         shapeRenderer.rect(santa.getX(), santa.getY(), santa.getWidth(), santa.getHeight());
 
         // Recollim tots els Asteroid
-        ArrayList<Asteroid> asteroids = scrollHandler.getAsteroids();
-        Asteroid asteroid;
+        ArrayList<Zombie> zombies = scrollHandler.getAsteroids();
+        Zombie zombie;
 
-        for (int i = 0; i < asteroids.size(); i++) {
+        for (int i = 0; i < zombies.size(); i++) {
 
-            asteroid = asteroids.get(i);
+            zombie= zombies.get(i);
             switch (i) {
                 case 0:
                     shapeRenderer.setColor(1, 0, 0, 1);
@@ -125,7 +135,7 @@ public class GameScreen implements Screen {
                     shapeRenderer.setColor(1, 1, 1, 1);
                     break;
             }
-            shapeRenderer.circle(asteroid.getX() + asteroid.getWidth() / 2, asteroid.getY() + asteroid.getWidth() / 2, asteroid.getWidth() / 2);
+            shapeRenderer.circle(zombie.getX() + zombie.getWidth() / 2, zombie.getY() + zombie.getWidth() / 2, zombie.getWidth() / 2);
         }
         shapeRenderer.end();
     }
@@ -183,6 +193,37 @@ public class GameScreen implements Screen {
             textLayout.setText(AssetManager.font, "Game Over :'(");
             currentState = GameState.GAMEOVER;
         }
+
+        if(fires.size() > 0) {
+
+            for(Fire i : fires){
+                Zombie zombie = scrollHandler.collides(i);
+                if(zombie != null){
+                    AssetManager.explosionSound.play();
+                    explosion.add(new Explosion(AssetManager.explosionAnim, (zombie.getX() + zombie.getWidth() / 2) - 32, zombie.getY() + zombie.getHeight() / 2 - 32, 64f, 64f, delta));
+                    fires.remove(i);
+                    i.remove();
+                    scrollHandler.killerZombie(zombie);
+                    break;
+                }
+            }
+        }
+       /* if(explosion.size() > 0) {
+            for(Explosion explo : explosion){
+                if(!explo.isFinished()){
+                    batch.begin();
+                    batch.draw((Texture) explo.getAnim().getKeyFrame(explo.getDelta(), true), explo.getX(), explo.getY(), explo.getWidth(), explo.getHeight());
+                    batch.end();
+                    explo.setDelta(explo.getDelta() + delta);
+                    break;
+                }
+                else {
+                    explosion.remove(explo);
+                    break;
+                }
+            }
+        }*/
+
     }
 
     private void updateGameOver(float delta) {
@@ -260,6 +301,11 @@ public class GameScreen implements Screen {
     }
 
     public void setCurrentState(GameState currentState) {
-        this.currentState = currentState;
+
+        this.currentState = GameState.RUNNING;
+        Fire fire = new Fire(santa.getX() + santa.getWidth(), santa.getY() + santa.getHeight()/2, 9, 2, Settings.SPACECRAFT_VELOCITY * 2);
+        stage.getRoot().addActor(fire);
+        fires.add(fire);
+        AssetManager.explosionSound.play();
     }
 }

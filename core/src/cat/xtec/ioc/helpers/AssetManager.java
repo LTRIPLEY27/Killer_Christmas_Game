@@ -23,11 +23,15 @@ public class AssetManager {
     // Nau i fons
 
     // addhiriendo los valores para que el assetmanager ejecute el ataque 'FIRE'
-    public static TextureRegion santa, santaDown, santaUp, background, fire, fireButton;
+    public static TextureRegion santa, santaDown, santaUp, background, fire;
 
-    // Asteroid
+    // Zombie
     public static TextureRegion[] zombies;
     public static Animation zombie;
+
+    // Zombie
+    /*public static TextureRegion[] fires;
+    public static Animation fire;*/
 
     // Explosió
     public static TextureRegion[] explosion;
@@ -65,10 +69,17 @@ public class AssetManager {
         // BOLA DE ZOMBIES
         fire = new TextureRegion(sheet, 1285, 1298, 35, 32);
         fire.flip(false, true);
-
+        //fireButton = new TextureRegion(sheet, 772, 775,  32, 32);
+        //fireButton.flip(false, true);
 
         // with atlas
         //atlas = new TextureAtlas(Gdx.files.internal("SHEET_IMAGE.atlas"));
+
+         //********************************************************************
+
+            // FIRE
+         //********************************************************************
+
 
 
         // Carreguem els 16 estats de l'asteroid
@@ -83,20 +94,32 @@ public class AssetManager {
         zombies[5] = new TextureRegion(sheet, 785, 475, 199, 298);
         zombies[6] = new TextureRegion(sheet, 791, 176, 233, 297);
         zombies[7] = new TextureRegion(sheet, 1026, 442, 231, 294);
-        //for (int i = 0; i < zombies.length; i++) {
 
+        for(int i = 0; i < zombies.length; i++){
+            zombies[i].flip(false, true);
+        }
 
-        //}
+        /*fires = new TextureRegion[6];
 
+        fires[0] = new TextureRegion(sheet, 1266, 1014, 16, 16);
+        fires[1] = new TextureRegion(sheet, 968, 1008, 22, 21);
+        fires[2] = new TextureRegion(sheet, 1285, 1298, 35, 32);
+        fires[3] = new TextureRegion(sheet, 1266, 1014, 16, 16);
+        fires[4] = new TextureRegion(sheet, 1285, 1298, 35, 32);
+        fires[5] = new TextureRegion(sheet, 877, 4, 73, 74);
 
+        //fire = new Animation(0.04f, fires);
 
-        //
-
+        for(int i = 0; i < fires.length; i++){
+            fire = new Animation(0.04f, fires);
+            fire.setPlayMode(Animation.PlayMode.LOOP_REVERSED);
+        }
+*/
         // Creem l'animació de l'asteroid i fem que s'executi contínuament en sentit anti-horari
 
         for(int i = 0; i < zombies.length; i++){
             zombie = new Animation(0.04f, zombies);
-            zombie.setPlayMode(Animation.PlayMode.LOOP);
+            zombie.setPlayMode(Animation.PlayMode.LOOP_REVERSED);
         }
         //zombie = new Animation(0.04f, zombies);
         //zombie.setPlayMode(Animation.PlayMode.LOOP);

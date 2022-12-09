@@ -27,7 +27,7 @@ public class Fire extends Scrollable{
         onPause = false;
     }
 
-    // método para llamar al pause
+    // método para llamar al pause ejercicio 3
     void getPause(){
 
         onPause = true;
@@ -44,10 +44,10 @@ public class Fire extends Scrollable{
 
     @Override
     public void act(float delta){
-        if(!onPause){
+        //if(!onPause){
             super.act(delta);
             attack.set(position.x, position.y, width, 2);
-        }
+        //}
     }
 
     @Override

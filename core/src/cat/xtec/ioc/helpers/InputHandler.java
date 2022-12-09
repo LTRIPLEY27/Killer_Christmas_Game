@@ -61,11 +61,13 @@ public class InputHandler implements InputProcessor {
                 if (actorHit != null) {
 
                     switch (actorHit.getName()){
-                        case "spacecraft":
+                        case "santa":
+                            screen.setCurrentState(GameScreen.GameState.RUNNING);
                             break;
-                        case "fire":
+                        /*case "fireButton":
                             screen.setCurrentState(GameScreen.GameState.FIRE);
-                            break;
+                            //screen.setCurrentState(GameScreen.GameState.RUNNING);
+                            break;*/
                     }
                    // Gdx.app.log("HIT", actorHit.getName());
 
