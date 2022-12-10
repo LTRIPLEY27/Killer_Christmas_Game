@@ -58,20 +58,16 @@ public class InputHandler implements InputProcessor {
 
                 stageCoord = stage.screenToStageCoordinates(new Vector2(screenX, screenY));
                 Actor actorHit = stage.hit(stageCoord.x, stageCoord.y, true);
-                if (actorHit != null) {
+                //if (actorHit != null) {
 
-                    switch (actorHit.getName()){
-                        case "santa":
+                    //switch (actorHit.getName()){
+                        //case "santa":
                             screen.setCurrentState(GameScreen.GameState.RUNNING);
-                            break;
-                        /*case "fireButton":
-                            screen.setCurrentState(GameScreen.GameState.FIRE);
-                            //screen.setCurrentState(GameScreen.GameState.RUNNING);
-                            break;*/
-                    }
+                            //break;
+                   // }
                    // Gdx.app.log("HIT", actorHit.getName());
 
-                }
+               // }
                 break;
             // Si l'estat és GameOver tornem a iniciar el joc
             case GAMEOVER:

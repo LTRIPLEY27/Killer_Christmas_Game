@@ -17,6 +17,10 @@ public class Settings {
     public static final float MAX_ASTEROID = 1.5f;
     public static final float MIN_ASTEROID = 0.5f;
 
+    //****************ADICION DE VALORES PARA LAS MONEDAS
+    public static final float MAX_COIN = 1.0f;
+    public static final float MIN_COIN = 0.8f;
+
     // Configuració Scrollable
     public static final int ASTEROID_SPEED = -150;
     public static final int ASTEROID_GAP = 75;

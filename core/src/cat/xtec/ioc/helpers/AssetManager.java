@@ -14,31 +14,23 @@ public class AssetManager {
 
     // Sprite Sheet
     public static Texture sheet;
-
-    //public  static TextureAtlas atlas;
-
-    //public static Animation <Sprite> run;
+    public static Texture coins;
 
     // CAMBIO DE VARIABLES SEGÚN EL ENUNCIADO
-    // Nau i fons
 
     // addhiriendo los valores para que el assetmanager ejecute el ataque 'FIRE'
-    public static TextureRegion santa, santaDown, santaUp, background, fire;
+    public static TextureRegion santa, santaDown, santaUp, background, fire, coin1, coin2;
 
     // Zombie
-    public static TextureRegion[] zombies;
-    public static Animation zombie;
-
-    // Zombie
-    /*public static TextureRegion[] fires;
-    public static Animation fire;*/
+    public static TextureRegion[] zombies, bonus1, bonus2;
+    public static Animation zombie, bonu1, bonu2;
 
     // Explosió
     public static TextureRegion[] explosion;
     public static Animation explosionAnim;
 
     // Sons
-    public static Sound explosionSound;
+    public static Sound explosionSound, bonusSound;
     public static Music music;
 
 
@@ -54,6 +46,8 @@ public class AssetManager {
         sheet = new Texture(Gdx.files.internal("image_sheet.png"));
         sheet.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
 
+        coins = new Texture(Gdx.files.internal("sheet.png"));
+        coins.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         // Sprites de la nau
         santa = new TextureRegion(sheet, 785, 48, 90, 120); // -- ok
         santa.flip(false, true);
@@ -69,11 +63,7 @@ public class AssetManager {
         // BOLA DE ZOMBIES
         fire = new TextureRegion(sheet, 1285, 1298, 35, 32);
         fire.flip(false, true);
-        //fireButton = new TextureRegion(sheet, 772, 775,  32, 32);
-        //fireButton.flip(false, true);
 
-        // with atlas
-        //atlas = new TextureAtlas(Gdx.files.internal("SHEET_IMAGE.atlas"));
 
          //********************************************************************
 
@@ -99,31 +89,51 @@ public class AssetManager {
             zombies[i].flip(false, true);
         }
 
-        /*fires = new TextureRegion[6];
 
-        fires[0] = new TextureRegion(sheet, 1266, 1014, 16, 16);
-        fires[1] = new TextureRegion(sheet, 968, 1008, 22, 21);
-        fires[2] = new TextureRegion(sheet, 1285, 1298, 35, 32);
-        fires[3] = new TextureRegion(sheet, 1266, 1014, 16, 16);
-        fires[4] = new TextureRegion(sheet, 1285, 1298, 35, 32);
-        fires[5] = new TextureRegion(sheet, 877, 4, 73, 74);
+        //****************************************************
 
-        //fire = new Animation(0.04f, fires);
+                // ARRAY DE MONEDAS PARA EL BONUS
+        //****************************************************
+        bonus1 = new TextureRegion[7];
+        bonus2 = new TextureRegion[7];
 
-        for(int i = 0; i < fires.length; i++){
-            fire = new Animation(0.04f, fires);
-            fire.setPlayMode(Animation.PlayMode.LOOP_REVERSED);
+        bonus1[0] = new TextureRegion(coins, 2, 486, 300, 300);
+        bonus1[1] = new TextureRegion(coins, 304, 486, 300, 300);
+        bonus1[2] = new TextureRegion(coins, 1074, 1356, 300, 300);
+        bonus1[3] = new TextureRegion(coins, 606, 752, 300, 300);
+        bonus1[4] = new TextureRegion(coins,  908, 752, 300, 300);
+        bonus1[5] = new TextureRegion(coins, 1512, 1054, 300, 300);
+        bonus1[6] = new TextureRegion(coins, 2, 486, 300, 300);
+
+
+        bonus2[0] = new TextureRegion(coins, 2, 184, 300, 300);
+        bonus2[1] = new TextureRegion(coins, 1512, 450, 300, 300);
+        bonus2[2] = new TextureRegion(coins, 606, 1054, 300, 300);
+        bonus2[3] = new TextureRegion(coins, 2, 1090, 300, 300);
+        bonus2[4] = new TextureRegion(coins, 908, 450, 300, 300);
+        bonus2[5] = new TextureRegion(coins, 1678, 1658, 300, 300);
+        bonus2[6] = new TextureRegion(coins, 908, 148, 300, 300);
+
+
+        for(int i = 0; i < bonus1.length; i++){
+            bonus1[i].flip(false, true);
+            bonus2[i].flip(false, true);
         }
-*/
+
+        bonu1 = new Animation(0.4f, bonus1);
+        bonu1.setPlayMode(Animation.PlayMode.LOOP);
+
+        bonu2 = new Animation(0.4f, bonus2);
+        bonu2.setPlayMode(Animation.PlayMode.LOOP);
+
         // Creem l'animació de l'asteroid i fem que s'executi contínuament en sentit anti-horari
 
-        for(int i = 0; i < zombies.length; i++){
+       /* for(int i = 0; i < zombies.length; i++){
             zombie = new Animation(0.04f, zombies);
             zombie.setPlayMode(Animation.PlayMode.LOOP_REVERSED);
-        }
-        //zombie = new Animation(0.04f, zombies);
-        //zombie.setPlayMode(Animation.PlayMode.LOOP);
-
+        }*/
+        zombie = new Animation(0.04f, zombies);
+        zombie.setPlayMode(Animation.PlayMode.LOOP_REVERSED);
         // Creem els 16 estats de l'explosió
         //explosion = new TextureRegion[4];
         explosion = new TextureRegion[16];
@@ -140,7 +150,6 @@ public class AssetManager {
         explosionAnim = new Animation(0.04f, explosion);
 
         // Fons de pantalla
-        //background = new TextureRegion(sheet1, 0, 177, 480, 135);
         background = new TextureRegion(sheet, 2, 764, 768, 566);
         background.flip(false, true);  // da la vuelta al fondo
 
@@ -148,8 +157,8 @@ public class AssetManager {
         // Explosió
         explosionSound = Gdx.audio.newSound(Gdx.files.internal("sounds/explosion.wav"));
 
+        bonusSound = Gdx.audio.newSound(Gdx.files.internal("sounds/coin.wav"));
         // Música del joc
-        //music = Gdx.audio.newMusic(Gdx.files.internal("sounds/Afterburner.ogg"));  --> original
         music = Gdx.audio.newMusic(Gdx.files.internal("sounds/brain.ogg"));
         music.setVolume(0.2f);
         music.setLooping(true);
@@ -173,7 +182,6 @@ public class AssetManager {
         sheet.dispose();
         explosionSound.dispose();
         music.dispose();
-        //atlas.dispose();
 
     }
 }

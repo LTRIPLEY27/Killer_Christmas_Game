@@ -5,10 +5,13 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 
@@ -17,6 +20,8 @@ import java.util.ArrayList;
 import cat.xtec.ioc.helpers.AssetManager;
 import cat.xtec.ioc.helpers.InputHandler;
 
+import cat.xtec.ioc.objects.BonusA;
+import cat.xtec.ioc.objects.BonusB;
 import cat.xtec.ioc.objects.Explosion;
 import cat.xtec.ioc.objects.Fire;
 import cat.xtec.ioc.objects.ScrollHandler;
@@ -32,9 +37,11 @@ public class GameScreen implements Screen {
 
     public enum GameState {
 
-        READY, RUNNING, GAMEOVER, FIRE
+        READY, RUNNING, GAMEOVER
 
     }
+
+
 
     private GameState currentState;
 
@@ -52,10 +59,27 @@ public class GameScreen implements Screen {
 
     // Preparem el textLayout per escriure text
     private GlyphLayout textLayout;
+    private GlyphLayout pounts;
 
     private ArrayList <Fire> fires;
 
     private ArrayList<Explosion> explosion;
+
+    private ArrayList<Zombie> zombies;
+    private ArrayList<BonusA> bonus1;
+    private ArrayList<BonusB> bonus2;
+
+    ////////
+
+    private Label.LabelStyle textStyle;
+    private Label text;
+
+    private Label bonus;
+
+    private int score = 0;
+
+    private int bonusCounter = 25;
+
 
     public GameScreen(Batch prevBatch, Viewport prevViewport) {
 
@@ -89,10 +113,18 @@ public class GameScreen implements Screen {
         textLayout = new GlyphLayout();
         textLayout.setText(AssetManager.font, "Are you\nready to run for your life?");
 
+
+
         currentState = GameState.READY;
 
         // Assignem com a gestor d'entrada la classe InputHandler
         Gdx.input.setInputProcessor(new InputHandler(this));
+
+        // PUNTAJE TEXT
+        textStyle = new Label.LabelStyle(AssetManager.font, null);
+        text = new Label(("Points :") + score, textStyle);
+
+        stage.addActor(text);
 
     }
 
@@ -115,8 +147,15 @@ public class GameScreen implements Screen {
         shapeRenderer.rect(santa.getX(), santa.getY(), santa.getWidth(), santa.getHeight());
 
         // Recollim tots els Asteroid
-        ArrayList<Zombie> zombies = scrollHandler.getAsteroids();
+        zombies = scrollHandler.getAsteroids();
+
+        bonus1 = scrollHandler.getCoins();
+        bonus2 = scrollHandler.getCoinsB();
+
         Zombie zombie;
+        BonusA bonusA;
+        BonusB bonusB;
+
 
         for (int i = 0; i < zombies.size(); i++) {
 
@@ -136,6 +175,48 @@ public class GameScreen implements Screen {
                     break;
             }
             shapeRenderer.circle(zombie.getX() + zombie.getWidth() / 2, zombie.getY() + zombie.getWidth() / 2, zombie.getWidth() / 2);
+        }
+
+        //////////////////////////////////////////////////////
+        for (int i = 0; i < bonus1.size(); i++) {
+
+            bonusA = bonus1.get(i);
+            switch (i) {
+                case 0:
+                    shapeRenderer.setColor(1, 0, 0, 1);
+                    break;
+                case 1:
+                    shapeRenderer.setColor(0, 0, 1, 1);
+                    break;
+                case 2:
+                    shapeRenderer.setColor(1, 1, 0, 1);
+                    break;
+                default:
+                    shapeRenderer.setColor(1, 1, 1, 1);
+                    break;
+            }
+            shapeRenderer.circle(bonusA.getX() + bonusA.getWidth() / 2, bonusA.getY() + bonusA.getWidth() / 2, bonusA.getWidth() / 2);
+        }
+
+        //////////////////////////////////////////////////////
+        for (int i = 0; i < bonus2.size(); i++) {
+
+            bonusB = bonus2.get(i);
+            switch (i) {
+                case 0:
+                    shapeRenderer.setColor(1, 0, 0, 1);
+                    break;
+                case 1:
+                    shapeRenderer.setColor(0, 0, 1, 1);
+                    break;
+                case 2:
+                    shapeRenderer.setColor(1, 1, 0, 1);
+                    break;
+                default:
+                    shapeRenderer.setColor(1, 1, 1, 1);
+                    break;
+            }
+            shapeRenderer.circle(bonusB.getX() + bonusB.getWidth() / 2, bonusB.getY() + bonusB.getWidth() / 2, bonusB.getWidth() / 2);
         }
         shapeRenderer.end();
     }
@@ -164,8 +245,6 @@ public class GameScreen implements Screen {
             case READY:
                 updateReady();
                 break;
-
-
         }
 
         //drawElements();
@@ -194,21 +273,57 @@ public class GameScreen implements Screen {
             currentState = GameState.GAMEOVER;
         }
 
+      /*if (scrollHandler.collidesBonus(santa)){
+            AssetManager.bonusSound.play();
+            //scrollHandler.getBonus(santa.getHeight());
+            currentState = GameState.RUNNING;
+        }*/
+
         if(fires.size() > 0) {
 
             for(Fire i : fires){
+                BonusA bonn = scrollHandler.collidesOk(i);
+                BonusB bonni = scrollHandler.collidesOkB(i);
+                if (bonn != null){
+                    AssetManager.bonusSound.play();
+                    score += 30;
+                    //cont++;
+
+                    text.setText("Score : " + score + "count ");
+                    scrollHandler.getBonus(bonn);
+                    scrollHandler.addNewBonus(bonn);
+                }
+
+                if (bonni != null){
+                    AssetManager.bonusSound.play();
+                    score += 50;
+                    //cont++;
+
+                    text.setText("Score : " + score + "count ");
+                    scrollHandler.getBonusB(bonni);
+                    scrollHandler.addNewBonusB(bonni);
+                    //scrollHandler.reset();
+                }
                 Zombie zombie = scrollHandler.collides(i);
                 if(zombie != null){
                     AssetManager.explosionSound.play();
+                    score += 10;
+                    //cont++;
+
+                    text.setText("Score : " + score + "count ");
                     explosion.add(new Explosion(AssetManager.explosionAnim, (zombie.getX() + zombie.getWidth() / 2) - 32, zombie.getY() + zombie.getHeight() / 2 - 32, 64f, 64f, delta));
                     fires.remove(i);
                     i.remove();
                     scrollHandler.killerZombie(zombie);
+                    scrollHandler.addNewZombie(zombie);
+                    // REINICIA EL ELEMENTO
+                    //scrollHandler.reset();
                     break;
                 }
+                //scrollHandler.reset();
             }
         }
-       /* if(explosion.size() > 0) {
+       /*if(explosion.size() > 0) {
             for(Explosion explo : explosion){
                 if(!explo.isFinished()){
                     batch.begin();
@@ -223,6 +338,17 @@ public class GameScreen implements Screen {
                 }
             }
         }*/
+        //drawElements();
+
+
+    }
+
+     void addBonus(){
+        bonus = new Label("Now you Get a Bonus¡¡¡: " + score, textStyle);
+        bonus.setPosition(60, 60);
+
+        stage.addActor(bonus);
+
 
     }
 
@@ -308,4 +434,6 @@ public class GameScreen implements Screen {
         fires.add(fire);
         AssetManager.explosionSound.play();
     }
+
+
 }
