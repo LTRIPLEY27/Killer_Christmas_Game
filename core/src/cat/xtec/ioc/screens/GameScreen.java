@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -37,7 +39,7 @@ public class GameScreen implements Screen {
 
     public enum GameState {
 
-        READY, RUNNING, GAMEOVER
+        READY, RUNNING, GAMEOVER, PAUSED
 
     }
 
@@ -74,11 +76,9 @@ public class GameScreen implements Screen {
     private Label.LabelStyle textStyle;
     private Label text;
 
-    private Label bonus;
 
     private int score = 0;
 
-    private int bonusCounter = 25;
 
 
     public GameScreen(Batch prevBatch, Viewport prevViewport) {
@@ -114,6 +114,13 @@ public class GameScreen implements Screen {
         textLayout.setText(AssetManager.font, "Are you\nready to run for your life?");
 
 
+        // CARGA DE LA IMAGEN PAUSE DEL ASSETMANAGER
+        Image paused = new Image(AssetManager.pause);
+        paused.setName("pause");
+
+        // INDICACIÓN DE LA POSICIÓN DEL PAUSE
+        paused.setPosition((Settings.GAME_WIDTH) - paused.getWidth() -5, 5);
+        stage.addActor(paused);
 
         currentState = GameState.READY;
 
@@ -245,6 +252,12 @@ public class GameScreen implements Screen {
             case READY:
                 updateReady();
                 break;
+                // NUEVO ESTADO 'PAUSE'
+            case PAUSED:
+                textLayout.setText(AssetManager.font, "Paused");
+                //LLAMADO AL MÉTODO PAUSE PARA PARAR TODO EL PROGRAMA
+                updatePaused(delta);
+                break;
         }
 
         //drawElements();
@@ -261,6 +274,15 @@ public class GameScreen implements Screen {
 
     }
 
+    // MÉTODO PARA INVOCAR LA PAUSE
+    private void updatePaused(float delta){
+        stage.act(delta);
+        batch.begin();
+        //DIBUJAMOS LA ETIQUETA
+        AssetManager.font.draw(batch, textLayout, (Settings.GAME_WIDTH / 2) - textLayout.width / 2, (Settings.GAME_HEIGHT / 2) - textLayout.height / 2);
+        batch.end();
+    }
+
     private void updateRunning(float delta) {
         stage.act(delta);
 
@@ -273,12 +295,7 @@ public class GameScreen implements Screen {
             currentState = GameState.GAMEOVER;
         }
 
-      /*if (scrollHandler.collidesBonus(santa)){
-            AssetManager.bonusSound.play();
-            //scrollHandler.getBonus(santa.getHeight());
-            currentState = GameState.RUNNING;
-        }*/
-
+        // VERIFICA COLISIONES DEL
         if(fires.size() > 0) {
 
             for(Fire i : fires){
@@ -287,70 +304,41 @@ public class GameScreen implements Screen {
                 if (bonn != null){
                     AssetManager.bonusSound.play();
                     score += 30;
-                    //cont++;
-
-                    text.setText("Score : " + score + "count ");
+                    text.setText("Score + Bonus : " + score);
                     scrollHandler.getBonus(bonn);
                     scrollHandler.addNewBonus(bonn);
+                    scrollHandler.reset();
                 }
 
                 if (bonni != null){
                     AssetManager.bonusSound.play();
                     score += 50;
-                    //cont++;
-
-                    text.setText("Score : " + score + "count ");
+                    text.setText("Score + Bonus: " + score );
                     scrollHandler.getBonusB(bonni);
                     scrollHandler.addNewBonusB(bonni);
-                    //scrollHandler.reset();
+                    scrollHandler.reset();
                 }
                 Zombie zombie = scrollHandler.collides(i);
                 if(zombie != null){
                     AssetManager.explosionSound.play();
                     score += 10;
-                    //cont++;
-
-                    text.setText("Score : " + score + "count ");
+                    text.setText("Score : " + score);
                     explosion.add(new Explosion(AssetManager.explosionAnim, (zombie.getX() + zombie.getWidth() / 2) - 32, zombie.getY() + zombie.getHeight() / 2 - 32, 64f, 64f, delta));
                     fires.remove(i);
                     i.remove();
                     scrollHandler.killerZombie(zombie);
                     scrollHandler.addNewZombie(zombie);
                     // REINICIA EL ELEMENTO
-                    //scrollHandler.reset();
+                    scrollHandler.reset();
                     break;
                 }
-                //scrollHandler.reset();
+
             }
+
         }
-       /*if(explosion.size() > 0) {
-            for(Explosion explo : explosion){
-                if(!explo.isFinished()){
-                    batch.begin();
-                    batch.draw((Texture) explo.getAnim().getKeyFrame(explo.getDelta(), true), explo.getX(), explo.getY(), explo.getWidth(), explo.getHeight());
-                    batch.end();
-                    explo.setDelta(explo.getDelta() + delta);
-                    break;
-                }
-                else {
-                    explosion.remove(explo);
-                    break;
-                }
-            }
-        }*/
-        //drawElements();
-
 
     }
 
-     void addBonus(){
-        bonus = new Label("Now you Get a Bonus¡¡¡: " + score, textStyle);
-        bonus.setPosition(60, 60);
-
-        stage.addActor(bonus);
-
-
-    }
 
     private void updateGameOver(float delta) {
         stage.act(delta);
@@ -393,11 +381,17 @@ public class GameScreen implements Screen {
     @Override
     public void pause() {
 
+        /// LLAMAMOS A PAUSAR LA MÍCA Y SETTEAR EL ESTADO DEL JUEGO
+        AssetManager.music.pause();
+
+        if(getCurrentState() == GameState.RUNNING) {
+            setCurrentState(GameState.PAUSED);
+        }
     }
 
     @Override
     public void resume() {
-
+        AssetManager.music.play();
     }
 
     @Override
@@ -428,6 +422,15 @@ public class GameScreen implements Screen {
 
     public void setCurrentState(GameState currentState) {
 
+        switch (currentState) {
+            case PAUSED:
+                // CONDICIONAMOS EL VOLUMEN A LA PAUSA
+                AssetManager.music.setVolume(0.03f);
+                hidePositions();
+                santa.startPause();
+                scrollHandler.setPause();
+
+        }
         this.currentState = GameState.RUNNING;
         Fire fire = new Fire(santa.getX() + santa.getWidth(), santa.getY() + santa.getHeight()/2, 9, 2, Settings.SPACECRAFT_VELOCITY * 2);
         stage.getRoot().addActor(fire);

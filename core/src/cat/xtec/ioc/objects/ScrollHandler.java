@@ -24,7 +24,10 @@ public class ScrollHandler extends Group {
     // Objecte Random
     Random r;
 
+    // DEFINIMOS LAS VARIABLES PARA MANEJAR EL ESTADO PAUSED
+    private boolean paused;
 
+    private float creation;
     public ScrollHandler() {
 
         // Creem els dos fons
@@ -38,25 +41,38 @@ public class ScrollHandler extends Group {
         // Creem l'objecte random
         r = new Random();
 
-        // Comencem amb 3 zombies
-        numAsteroids = 3;
-        bonusACount = 3;
-        bonusBCount = 2;
+        // array de elementos
+        // ZOMBIES = 20, BONUS A = 10 Y BONUS B = 5
+        numAsteroids = 20;
+        bonusACount = 10;
+        bonusBCount = 5;
+
+        // definición de los tiempos para salir elementos per pantalla
+        creation = 0;
+
+        // INICIALIZAREMOS EL ESTADO PAUSE EN FALSE
+        paused = false;
 
         // Creem l'ArrayList
         zombies = new ArrayList<Zombie>();
         bonusA = new ArrayList<BonusA>();
         bonusB = new ArrayList<BonusB>();
 
+
+
+
         // Definim una mida aleatòria entre el mínim i el màxim
         float newSize = Methods.randomFloat(Settings.MIN_ASTEROID, Settings.MAX_ASTEROID) * 34;
 
-        float newSizeCoin = Methods.randomFloat(Settings.MIN_COIN, Settings.MAX_COIN) * 34;
+       // float newSizeCoin = Methods.randomFloat(Settings.MIN_COIN, Settings.MAX_COIN) * 34; //  ---> ORIGINAL
+        float newSizeCoin = Methods.randomFloat(Settings.MIN_COIN, Settings.MAX_COIN) * 42;
 
         // Afegim el primer Zombie a l'Array i al grup
         Zombie zombie = new Zombie(Settings.GAME_WIDTH, r.nextInt(Settings.GAME_HEIGHT - (int) newSize), newSize, newSize, Settings.ASTEROID_SPEED);
-        BonusA bonus1 = new BonusA(Settings.GAME_WIDTH, r.nextInt(Settings.GAME_HEIGHT - (int) newSizeCoin), newSizeCoin, newSizeCoin, Settings.ASTEROID_SPEED);
-        BonusB bonus2 = new BonusB(Settings.GAME_WIDTH, r.nextInt(Settings.GAME_HEIGHT - (int) newSizeCoin), newSizeCoin, newSizeCoin, Settings.ASTEROID_SPEED);
+
+        // MODIFICACIÓN DE LAS SETTINGS PARA INDICAR LA VELOCIDAD Y MANEJAR LA PROBABILIDAD DE APARICION
+        BonusA bonus1 = new BonusA(Settings.GAME_WIDTH, r.nextInt(Settings.GAME_HEIGHT - (int) newSizeCoin), newSizeCoin, newSizeCoin, Settings.SCOREA_SPEED);
+        BonusB bonus2 = new BonusB(Settings.GAME_WIDTH, r.nextInt(Settings.GAME_HEIGHT - (int) newSizeCoin), newSizeCoin, newSizeCoin, Settings.SCOREB_SPEED);
 
         zombies.add(zombie);
         bonusA.add(bonus1);
@@ -81,25 +97,18 @@ public class ScrollHandler extends Group {
 
         // TODAS LAS COINS
         for (int i = 1; i < bonusACount; i++) {
-            // Creem la mida al·leatòria
             newSizeCoin = Methods.randomFloat(Settings.MIN_COIN, Settings.MAX_COIN) * 34;
-            // Afegim l'zombie.
-            bonus1 = new BonusA(bonusA.get(bonusA.size() - 1).getTailX() + Settings.ASTEROID_GAP, r.nextInt(Settings.GAME_HEIGHT - (int) newSizeCoin), newSizeCoin, newSizeCoin, Settings.ASTEROID_SPEED);
-            // Afegim l'asteroide a l'ArrayList
+
+            bonus1 = new BonusA(bonusA.get(bonusA.size() - 1).getTailX() + Settings.ASTEROID_GAP, r.nextInt(Settings.GAME_HEIGHT - (int) newSizeCoin), newSizeCoin, newSizeCoin, Settings.SCOREA_SPEED);
             bonusA.add(bonus1);
-            // Afegim l'asteroide al grup d'actors
             addActor(bonus1);
         }
 
         // TODAS LAS COINS
         for (int i = 1; i < bonusBCount; i++) {
-            // Creem la mida al·leatòria
             newSizeCoin = Methods.randomFloat(Settings.MIN_COIN, Settings.MAX_COIN) * 34;
-            // Afegim l'zombie.
-            bonus2 = new BonusB(bonusB.get(bonusB.size() - 1).getTailX() + Settings.ASTEROID_GAP, r.nextInt(Settings.GAME_HEIGHT - (int) newSizeCoin), newSizeCoin, newSizeCoin, Settings.ASTEROID_SPEED);
-            // Afegim l'asteroide a l'ArrayList
+            bonus2 = new BonusB(bonusB.get(bonusB.size() - 1).getTailX() + Settings.ASTEROID_GAP, r.nextInt(Settings.GAME_HEIGHT - (int) newSizeCoin), newSizeCoin, newSizeCoin, Settings.SCOREB_SPEED);
             bonusB.add(bonus2);
-            // Afegim l'asteroide al grup d'actors
             addActor(bonus2);
         }
     }
@@ -111,9 +120,9 @@ public class ScrollHandler extends Group {
         if (bg.isLeftOfScreen()) {
             bg.reset(bg_back.getTailX());
 
-        } else if (bg_back.isLeftOfScreen()) {
+        }
+        else if (bg_back.isLeftOfScreen()) {
             bg_back.reset(bg.getTailX());
-
         }
 
         for (int i = 0; i < zombies.size(); i++) {
@@ -123,7 +132,7 @@ public class ScrollHandler extends Group {
                 if (i == 0) {
                     zombie.reset(zombies.get(zombies.size() - 1).getTailX() + Settings.ASTEROID_GAP);
                 } else {
-                    zombie.reset(zombies.get(i - 1).getTailX() + Settings.ASTEROID_GAP);
+                   zombie.reset(zombies.get(i - 1).getTailX() + Settings.ASTEROID_GAP);
                 }
             }
         }
@@ -134,9 +143,9 @@ public class ScrollHandler extends Group {
             BonusA bonus1 = bonusA.get(i);
             if (bonus1.isLeftOfScreen()) {
                 if (i == 0) {
-                    bonus1.reset(bonusA.get(bonusA.size() - 1).getTailX() + Settings.ASTEROID_GAP);
+                    bonus1.reset(bonusA.get(bonusA.size() - 1).getTailX() + Settings.COIN_GAP);
                 } else {
-                    bonus1.reset(bonusA.get(i - 1).getTailX() + Settings.ASTEROID_GAP);
+                    bonus1.reset(bonusA.get(i - 1).getTailX() + Settings.COIN_GAP);
                 }
             }
         }
@@ -146,9 +155,9 @@ public class ScrollHandler extends Group {
             BonusB bonus2 = bonusB.get(i);
             if (bonus2.isLeftOfScreen()) {
                 if (i == 0) {
-                    bonus2.reset(bonusA.get(bonusA.size() - 1).getTailX() + Settings.ASTEROID_GAP);
+                    bonus2.reset(bonusA.get(bonusA.size() - 1).getTailX() + Settings.COIN_GAP);
                 } else {
-                    bonus2.reset(bonusA.get(i - 1).getTailX() + Settings.ASTEROID_GAP);
+                    bonus2.reset(bonusA.get(i - 1).getTailX() + Settings.COIN_GAP);
                 }
             }
         }
@@ -223,17 +232,6 @@ public class ScrollHandler extends Group {
 
         return null;
     }
-    /*
-    public boolean collidesOk(Fire fire){
-
-        for(BonusA  i : bonusA){
-            if(i.collides(fire)){
-                return true;
-            }
-        }
-
-        return false;
-    }*/
 
 
     // CHEQUEAR PUES ACÁ PUEDE REVENTAR EL ZOMBIE
@@ -254,13 +252,13 @@ public class ScrollHandler extends Group {
         // Calculem les noves posicions de la resta d'zombies.
         for (int i = 1; i < bonusA.size(); i++) {
 
-            bonusA.get(i).reset(bonusA.get(i - 1).getTailX() + Settings.ASTEROID_GAP);
+            bonusA.get(i).reset(bonusA.get(i - 1).getTailX() + Settings.COIN_GAP);
 
         }
 
         for (int i = 1; i < bonusB.size(); i++) {
 
-            bonusB.get(i).reset(bonusB.get(i - 1).getTailX() + Settings.ASTEROID_GAP);
+            bonusB.get(i).reset(bonusB.get(i - 1).getTailX() + Settings.COIN_GAP);
 
         }
     }

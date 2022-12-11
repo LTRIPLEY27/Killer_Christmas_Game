@@ -1,11 +1,15 @@
 package cat.xtec.ioc.objects;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction;
 
 import cat.xtec.ioc.helpers.AssetManager;
 import cat.xtec.ioc.utils.Settings;
@@ -26,7 +30,9 @@ public class KillerSanta extends Actor {
 
     private Rectangle collisionRect;
 
-
+    // DEFINICIÓN DE LOS ESTADOS DEL JUEGO EN LOS PERSONAJES
+    private Action pausedActor;
+    private boolean paused;
 
     public KillerSanta(float x, float y, int width, int height) {
 
@@ -45,36 +51,54 @@ public class KillerSanta extends Actor {
         setBounds(position.x, position.y, width, height);
         setTouchable(Touchable.enabled);
 
-
+        // LA PAUSE LA INICIALIZAMOS EN FALSE Y RETORNARÁ TRUE CADA VEZ SE INVOQUE
+        paused = false;
     }
 
 
 
-
+    // MODIFICAMOS EL MÉTODO ACT PARA CONDICIONAR LAS PAUSED
     public void act(float delta) {
         super.act(delta);
 
-        // Movem la spacecraft depenent de la direcció controlant que no surti de la pantalla
-        switch (direction) {
-            case SANTA_UP:
-                if (this.position.y - Settings.SPACECRAFT_VELOCITY * delta >= 0) {
-                    this.position.y -= Settings.SPACECRAFT_VELOCITY * delta;
-                }
-                break;
-            case SANTA_DOWN:
-                if (this.position.y + height + Settings.SPACECRAFT_VELOCITY * delta <= Settings.GAME_HEIGHT) {
-                    this.position.y += Settings.SPACECRAFT_VELOCITY * delta;
-                }
-                break;
-            case SANTA_STRAIGHT:
-                break;
+        if(!paused){
+            // Movem la spacecraft depenent de la direcció controlant que no surti de la pantalla
+            switch (direction) {
+                case SANTA_UP:
+                    if (this.position.y - Settings.SPACECRAFT_VELOCITY * delta >= 0) {
+                        this.position.y -= Settings.SPACECRAFT_VELOCITY * delta;
+                    }
+                    break;
+                case SANTA_DOWN:
+                    if (this.position.y + height + Settings.SPACECRAFT_VELOCITY * delta <= Settings.GAME_HEIGHT) {
+                        this.position.y += Settings.SPACECRAFT_VELOCITY * delta;
+                    }
+                    break;
+                case SANTA_STRAIGHT:
+                    break;
+            }
+
+            collisionRect.set(position.x, position.y + 3, width, 10);
+            setBounds(position.x, position.y, width, height);
         }
 
-        collisionRect.set(position.x, position.y + 3, width, 10);
-        setBounds(position.x, position.y, width, height);
-
-
     }
+
+    // DEFINICIÓN DE MÉTODOS PARA ACCIONAR LOS ESTADOS PAUSE Y PLAY
+    public void startPause(){
+        paused = true;
+        pausedActor = Actions.repeat(RepeatAction.FOREVER, Actions.sequence(Actions.alpha(0.5f, 0.2f), Actions.alpha(1.0f, 0.2f)));
+        this.addAction(pausedActor);
+    }
+
+    // CUANDO INVOCAMOS LA SALIDA DE PAUSE REMOVEMOS LA ACTION
+    public void stopPause(){
+        paused = false;
+        this.removeAction(pausedActor);
+        Color color = this.getColor();
+        this.setColor(color.r, color.g, color.b, 1.0f);
+    }
+
 
     // Getters dels atributs principals
     public float getX() {

@@ -15,7 +15,7 @@ public class Settings {
 
     // Rang de valors per canviar la mida de l'asteroide.
     public static final float MAX_ASTEROID = 1.5f;
-    public static final float MIN_ASTEROID = 0.5f;
+    public static final float MIN_ASTEROID = 1.0f;
 
     //****************ADICION DE VALORES PARA LAS MONEDAS
     public static final float MAX_COIN = 1.0f;
@@ -24,11 +24,13 @@ public class Settings {
     // Configuració Scrollable
     public static final int ASTEROID_SPEED = -150;
     public static final int ASTEROID_GAP = 75;
+    public static final int COIN_GAP = 90;
     public static final int BG_SPEED = -100;
 
     // TODO Exercici 2: Propietats per la moneda
     public static final int SCORE_INCREASE = 100; // s'incrementa en 100 cada cop que toca una moneda
-    public static final int SCORE_SPEED = -175;
+    public static final int SCOREA_SPEED = -175;
+    public static final int SCOREB_SPEED = -200;
 
 
 }

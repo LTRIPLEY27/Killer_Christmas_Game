@@ -19,7 +19,7 @@ public class AssetManager {
     // CAMBIO DE VARIABLES SEGÚN EL ENUNCIADO
 
     // addhiriendo los valores para que el assetmanager ejecute el ataque 'FIRE'
-    public static TextureRegion santa, santaDown, santaUp, background, fire, coin1, coin2;
+    public static TextureRegion santa, santaDown, santaUp, background, fire, pause;
 
     // Zombie
     public static TextureRegion[] zombies, bonus1, bonus2;
@@ -58,6 +58,9 @@ public class AssetManager {
         santaDown = new TextureRegion(sheet, 478, 43, 90, 125); // ok
         santaDown.flip(false, true);
 
+        // ADICIÓN DEL PAUSE
+        pause = new TextureRegion(sheet, 877, 80, 300, 300);
+        pause.flip(false, true);
         //****************  ejercicio 2 fire
 
         // BOLA DE ZOMBIES
@@ -180,6 +183,7 @@ public class AssetManager {
 
         // Alliberem els recursos gràfics i de audio
         sheet.dispose();
+        coins.dispose();
         explosionSound.dispose();
         music.dispose();
 
