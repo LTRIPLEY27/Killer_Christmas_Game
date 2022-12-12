@@ -425,7 +425,7 @@ public class GameScreen implements Screen {
                 //stage.getRoot().findActor("pause");
 
                 AssetManager.music.setVolume(0.01f);
-                //hidePositions();
+                hidePositions();
                 santa.startPause();
 
                 scrollHandler.setPaused();
@@ -437,7 +437,7 @@ public class GameScreen implements Screen {
                 if(this.currentState != GameState.PAUSED){
                    // stage.getRoot().findActor("pause");
                     AssetManager.music.setVolume(0.3f);
-                    //showPositions();
+                    showPositions();
 
                     santa.stopPause();
                     scrollHandler.stopPaused();
@@ -459,12 +459,12 @@ public class GameScreen implements Screen {
 
     private void hidePositions() {
         stage.getRoot().findActor("pause").setVisible(false);
-        //stage.getRoot().findActor("laserButton").setVisible(false);
+        text.setText("");
     }
 
     private void showPositions() {
         stage.getRoot().findActor("pause").setVisible(true);
-        //stage.getRoot().findActor("laserButton").setVisible(true);
+        text.setText("Score : " + score);
     }
 
 }
