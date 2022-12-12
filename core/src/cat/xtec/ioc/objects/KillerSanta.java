@@ -1,6 +1,7 @@
 package cat.xtec.ioc.objects;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -30,6 +31,7 @@ public class KillerSanta extends Actor {
 
     private Rectangle collisionRect;
 
+    private float runTime = 0;
     // DEFINICIÓN DE LOS ESTADOS DEL JUEGO EN LOS PERSONAJES
     private Action pausedActor;
     private boolean paused;
@@ -37,8 +39,10 @@ public class KillerSanta extends Actor {
     public KillerSanta(float x, float y, int width, int height) {
 
         // Inicialitzem els arguments segons la crida del constructor
-        this.width = width;
-        this.height = height;
+        //this.width = width;
+        this.width = 40;
+        this.height = 40;
+        //this.height = height;
         position = new Vector2(x, y);
 
         // Inicialitzem la spacecraft a l'estat normal
@@ -60,7 +64,7 @@ public class KillerSanta extends Actor {
     // MODIFICAMOS EL MÉTODO ACT PARA CONDICIONAR LAS PAUSED
     public void act(float delta) {
         super.act(delta);
-
+        runTime += delta;
         if(!paused){
             // Movem la spacecraft depenent de la direcció controlant que no surti de la pantalla
             switch (direction) {
@@ -131,18 +135,18 @@ public class KillerSanta extends Actor {
     }
 
     // Obtenim el TextureRegion depenent de la posició de la spacecraft
-    public TextureRegion getSpacecraftTexture() {
+    public Animation getSpacecraftTexture() {
 
         switch (direction) {
 
             case SANTA_STRAIGHT:
-                return AssetManager.santa;
+                return AssetManager.santaRun;
             case SANTA_UP:
                 return AssetManager.santaUp;
             case SANTA_DOWN:
                 return AssetManager.santaDown;
             default:
-                return AssetManager.santa;
+                return AssetManager.santaRun;
         }
     }
 
@@ -158,7 +162,7 @@ public class KillerSanta extends Actor {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
-        batch.draw(getSpacecraftTexture(), position.x, position.y, width, height);
+       batch.draw((TextureRegion) AssetManager.santaRun.getKeyFrame(runTime, true), position.x, position.y, width, height);
     }
 
     public Rectangle getCollisionRect() {

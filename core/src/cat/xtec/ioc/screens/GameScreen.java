@@ -111,8 +111,8 @@ public class GameScreen implements Screen {
         // CARGA DE LA IMAGEN PAUSE DEL ASSETMANAGER
         paused = new Image(AssetManager.pause);
         paused.setName("pause");
-        paused.setWidth(50);
-        paused.setHeight(50);
+        paused.setWidth(40);
+        paused.setHeight(30);
 
         // INDICACIÓN DE LA POSICIÓN DEL PAUSE
         paused.setPosition(200, -10);
@@ -145,7 +145,7 @@ public class GameScreen implements Screen {
         // Pintem la nau
         shapeRenderer.rect(santa.getX(), santa.getY(), santa.getWidth(), santa.getHeight());
 
-        // Recollim tots els Asteroid
+        // LOS ACTORES
         zombies = scrollHandler.getAsteroids();
 
         bonus1 = scrollHandler.getCoins();
@@ -251,9 +251,6 @@ public class GameScreen implements Screen {
                 updatePaused(delta);
                 break;
         }
-
-        //drawElements();
-
     }
 
 
@@ -271,13 +268,9 @@ public class GameScreen implements Screen {
         // Dibuixem el text al centre de la pantalla
         batch.begin();
         AssetManager.font.draw(batch, textLayout, (Settings.GAME_WIDTH / 2) - textLayout.width / 2, (Settings.GAME_HEIGHT / 2) - textLayout.height / 2);
-        //stage.addActor(textLbl);
         batch.end();
 
     }
-
-
-
 
 
     private void updateRunning(float delta) {
@@ -302,8 +295,6 @@ public class GameScreen implements Screen {
                     score += 30;
                     text.setText("Score + Bonus : " + score);
                     scrollHandler.getBonus(bonn);
-                    //scrollHandler.addNewBonus(bonn);
-                   //scrollHandler.reset();
                 }
 
                 if (bonni != null){
@@ -311,15 +302,12 @@ public class GameScreen implements Screen {
                     score += 50;
                     text.setText("Score + Bonus: " + score );
                     scrollHandler.getBonusB(bonni);
-                    //scrollHandler.addNewBonusB(bonni);
-                    //scrollHandler.reset();
                 }
                 Zombie zombie = scrollHandler.collides(i);
                 if(zombie != null){
                     AssetManager.explosionSound.play();
                     score += 10;
                     text.setText("Score : " + score);
-                    //explosion.add(new Explosion(AssetManager.explosionAnim, (zombie.getX() + zombie.getWidth() / 2) - 32, zombie.getY() + zombie.getHeight() / 2 - 32, 64f, 64f, delta));
                     fires.remove(i);
                     i.remove();
                     scrollHandler.killerZombie(zombie);

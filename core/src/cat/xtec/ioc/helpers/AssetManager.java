@@ -15,15 +15,16 @@ public class AssetManager {
     // Sprite Sheet
     public static Texture sheet;
     public static Texture coins;
+    public static Texture paused;
 
     // CAMBIO DE VARIABLES SEGÚN EL ENUNCIADO
 
     // addhiriendo los valores para que el assetmanager ejecute el ataque 'FIRE'
-    public static TextureRegion santa, santaDown, santaUp, background, fire, pause;
+    public static TextureRegion santaD, santaU, background, fire, pause;
 
     // Zombie
-    public static TextureRegion[] zombies, bonus1, bonus2;
-    public static Animation zombie, bonu1, bonu2;
+    public static TextureRegion[] zombies, bonus1, bonus2, santa;
+    public static Animation zombie, bonu1, bonu2, santaRun, santaUp, santaDown;
 
     // Explosió
     public static TextureRegion[] explosion;
@@ -48,18 +49,18 @@ public class AssetManager {
 
         coins = new Texture(Gdx.files.internal("sheet.png"));
         coins.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-        // Sprites de la nau
-        santa = new TextureRegion(sheet, 785, 48, 90, 120); // -- ok
-        santa.flip(false, true);
 
-        santaUp = new TextureRegion(sheet, 375, 44, 104, 136); // -- ok
-        santaUp.flip(false, true);
+        paused = new Texture(Gdx.files.internal("paused.png"));
+        paused.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
 
-        santaDown = new TextureRegion(sheet, 478, 43, 90, 125); // ok
-        santaDown.flip(false, true);
+        santaU = new TextureRegion(paused, 604, 604,  200, 200); // -- ok
+        santaU.flip(false, true);
+
+        santaD = new TextureRegion(paused, 2, 204, 200, 200); // ok
+        santaD.flip(false, true);
 
         // ADICIÓN DEL PAUSE
-        pause = new TextureRegion(coins, 1210, 148, 300, 300);
+        pause = new TextureRegion(paused, 2, 406, 600, 600);
         pause.flip(false, true);
         //****************  ejercicio 2 fire
 
@@ -74,6 +75,27 @@ public class AssetManager {
          //********************************************************************
 
 
+        santa = new TextureRegion[6];
+
+        santa[0] = new TextureRegion(paused, 204, 2, 200, 200);
+        santa[1] = new TextureRegion(paused, 204, 204, 200, 200);
+        santa[2] = new TextureRegion(paused, 604, 806, 200, 200);
+        santa[3] = new TextureRegion(paused, 806, 806, 200, 200);
+        santa[4] = new TextureRegion(paused, 2, 2, 200, 200);
+        santa[5] = new TextureRegion(paused, 806, 604, 200, 200);
+
+        for (int i = 0; i < santa.length; i++){
+            santa[i].flip(false,true);
+        }
+
+        santaRun = new Animation(0.4f, santa);
+        santaRun.setPlayMode(Animation.PlayMode.LOOP);
+
+        santaUp = new Animation(0.2f, santaU);
+        santaUp.setPlayMode(Animation.PlayMode.LOOP);
+
+        santaDown = new Animation(0.2f, santaD);
+        santaDown.setPlayMode(Animation.PlayMode.LOOP);
 
         // Carreguem els 16 estats de l'asteroid
         //asteroid = new TextureRegion[16];

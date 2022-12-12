@@ -42,8 +42,10 @@ public class ScrollHandler extends Group {
         r = new Random();
 
         // array de elementos
-        bonusACount = 10;
-        bonusBCount = 5;
+
+        //DECLARAMOS LA PROPORCIONALIDAD DE SALIDA DE LOS BONUS CON UN RANDOM, Y CON MAYOR PUNTUACIÓN EL BONUS B CON MENOR PROPORCION DE SALIDA
+        bonusACount = r.nextInt(10);
+        bonusBCount = r.nextInt(5);
 
         // definición de los tiempos para salir elementos per pantalla
         creation = 0;
@@ -56,42 +58,16 @@ public class ScrollHandler extends Group {
         bonusA = new ArrayList<BonusA>();
         bonusB = new ArrayList<BonusB>();
 
-
-        /*
-
-        // Definim una mida aleatòria entre el mínim i el màxim
-        float newSize = Methods.randomFloat(Settings.MIN_ASTEROID, Settings.MAX_ASTEROID) * 34;
-
-       // float newSizeCoin = Methods.randomFloat(Settings.MIN_COIN, Settings.MAX_COIN) * 34; //  ---> ORIGINAL
         float newSizeCoin = Methods.randomFloat(Settings.MIN_COIN, Settings.MAX_COIN) * 42;
-
-        // Afegim el primer Zombie a l'Array i al grup
-        Zombie zombie = new Zombie(Settings.GAME_WIDTH, r.nextInt(Settings.GAME_HEIGHT - (int) newSize), newSize, newSize, Settings.ASTEROID_SPEED);
-
         // MODIFICACIÓN DE LAS SETTINGS PARA INDICAR LA VELOCIDAD Y MANEJAR LA PROBABILIDAD DE APARICION
         BonusA bonus1 = new BonusA(Settings.GAME_WIDTH, r.nextInt(Settings.GAME_HEIGHT - (int) newSizeCoin), newSizeCoin, newSizeCoin, Settings.SCOREA_SPEED);
         BonusB bonus2 = new BonusB(Settings.GAME_WIDTH, r.nextInt(Settings.GAME_HEIGHT - (int) newSizeCoin), newSizeCoin, newSizeCoin, Settings.SCOREB_SPEED);
 
-        zombies.add(zombie);
         bonusA.add(bonus1);
         bonusB.add(bonus2);
 
-        addActor(zombie);
         addActor(bonus1);
         addActor(bonus2);
-
-        // Des del segon fins l'últim asteroide
-        for (int i = 1; i < numAsteroids; i++) {
-            // Creem la mida al·leatòria
-            newSize = Methods.randomFloat(Settings.MIN_ASTEROID, Settings.MAX_ASTEROID) * 34;
-            // Afegim l'zombie.
-            zombie = new Zombie(zombies.get(zombies.size() - 1).getTailX() + Settings.ASTEROID_GAP, r.nextInt(Settings.GAME_HEIGHT - (int) newSize), newSize, newSize, Settings.ASTEROID_SPEED);
-            // Afegim l'asteroide a l'ArrayList
-            zombies.add(zombie);
-            // Afegim l'asteroide al grup d'actors
-            addActor(zombie);
-        }
-
 
         // TODAS LAS COINS
         for (int i = 1; i < bonusACount; i++) {
@@ -108,10 +84,9 @@ public class ScrollHandler extends Group {
             bonus2 = new BonusB(bonusB.get(bonusB.size() - 1).getTailX() + Settings.ASTEROID_GAP, r.nextInt(Settings.GAME_HEIGHT - (int) newSizeCoin), newSizeCoin, newSizeCoin, Settings.SCOREB_SPEED);
             bonusB.add(bonus2);
             addActor(bonus2);
-        }*/
+        }
 
-        addNewBonus();
-        addNewBonusB();
+
         addNewZombie();
     }
 
@@ -158,12 +133,6 @@ public class ScrollHandler extends Group {
 
             Zombie zombie = zombies.get(i);
             if (zombie.isLeftOfScreen() ) {
-                /*if (i == 0) {
-                    zombie.reset(zombies.get(zombies.size() - 1).getTailX() + Settings.ASTEROID_GAP);
-                } else {
-                   zombie.reset(zombies.get(i - 1).getTailX() + Settings.ASTEROID_GAP);
-                }*/
-
                 reset();
             }
         }
@@ -173,12 +142,11 @@ public class ScrollHandler extends Group {
 
             BonusA bonus1 = bonusA.get(i);
             if (bonus1.isLeftOfScreen()) {
-                /*if (i == 0) {
-                    /bonus1.reset(bonusA.get(bonusA.size() - 1).getTailX() + Settings.COIN_GAP);
+                if (i == 0) {
+                    bonus1.reset(bonusA.get(bonusA.size() - 1).getTailX() + Settings.COIN_GAP);
                 } else {
                    bonus1.reset(bonusA.get(i - 1).getTailX() + Settings.COIN_GAP);
-                }*/
-                reset();
+                }
             }
         }
 
@@ -186,12 +154,13 @@ public class ScrollHandler extends Group {
 
             BonusB bonus2 = bonusB.get(i);
             if (bonus2.isLeftOfScreen()) {
-                /*if (i == 0) {
+                if (i == 0) {
+
                     bonus2.reset(bonusA.get(bonusA.size() - 1).getTailX() + Settings.COIN_GAP);
                 } else {
                     bonus2.reset(bonusA.get(i - 1).getTailX() + Settings.COIN_GAP);
-                }*/
-                reset();
+
+                }
             }
         }
 
@@ -199,7 +168,7 @@ public class ScrollHandler extends Group {
         // paused
         if(paused) creation = 0;
 
-        if( creation > 1f && zombies.size() < 3 || bonusA.size() < 2 || bonusB.size() < 1){
+        if( creation > 1f && zombies.size() < 3 || bonusA.size() < 1 || bonusB.size() < 1){
             addNewZombie();
             addNewBonus();
             addNewBonusB();
