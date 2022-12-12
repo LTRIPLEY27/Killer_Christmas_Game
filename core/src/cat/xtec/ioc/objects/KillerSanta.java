@@ -95,8 +95,6 @@ public class KillerSanta extends Actor {
     public void stopPause(){
         paused = false;
         this.removeAction(pausedActor);
-        Color color = this.getColor();
-        this.setColor(color.r, color.g, color.b, 1.0f);
     }
 
 

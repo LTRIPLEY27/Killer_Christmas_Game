@@ -59,7 +59,7 @@ public class AssetManager {
         santaDown.flip(false, true);
 
         // ADICIÓN DEL PAUSE
-        pause = new TextureRegion(sheet, 877, 80, 300, 300);
+        pause = new TextureRegion(coins, 1210, 148, 300, 300);
         pause.flip(false, true);
         //****************  ejercicio 2 fire
 

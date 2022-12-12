@@ -3,16 +3,13 @@ package cat.xtec.ioc.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -24,7 +21,6 @@ import cat.xtec.ioc.helpers.InputHandler;
 
 import cat.xtec.ioc.objects.BonusA;
 import cat.xtec.ioc.objects.BonusB;
-import cat.xtec.ioc.objects.Explosion;
 import cat.xtec.ioc.objects.Fire;
 import cat.xtec.ioc.objects.ScrollHandler;
 import cat.xtec.ioc.objects.KillerSanta;
@@ -65,8 +61,6 @@ public class GameScreen implements Screen {
 
     private ArrayList <Fire> fires;
 
-    private ArrayList<Explosion> explosion;
-
     private ArrayList<Zombie> zombies;
     private ArrayList<BonusA> bonus1;
     private ArrayList<BonusB> bonus2;
@@ -76,6 +70,7 @@ public class GameScreen implements Screen {
     private Label.LabelStyle textStyle;
     private Label text;
 
+    private Image paused;
 
     private int score = 0;
 
@@ -107,7 +102,6 @@ public class GameScreen implements Screen {
         santa.setName("santa");
 
         fires = new ArrayList<Fire>();
-        explosion = new ArrayList<Explosion>();
 
         // Iniciem el GlyphLayout
         textLayout = new GlyphLayout();
@@ -115,23 +109,25 @@ public class GameScreen implements Screen {
 
 
         // CARGA DE LA IMAGEN PAUSE DEL ASSETMANAGER
-        Image paused = new Image(AssetManager.pause);
+        paused = new Image(AssetManager.pause);
         paused.setName("pause");
+        paused.setWidth(50);
+        paused.setHeight(50);
 
         // INDICACIÓN DE LA POSICIÓN DEL PAUSE
-        paused.setPosition((Settings.GAME_WIDTH) - paused.getWidth() -5, 5);
+        paused.setPosition(200, -10);
+
+        //paused.addAction(this);
         stage.addActor(paused);
-
-        currentState = GameState.READY;
-
-        // Assignem com a gestor d'entrada la classe InputHandler
-        Gdx.input.setInputProcessor(new InputHandler(this));
 
         // PUNTAJE TEXT
         textStyle = new Label.LabelStyle(AssetManager.font, null);
         text = new Label(("Points :") + score, textStyle);
 
         stage.addActor(text);
+        currentState = GameState.READY;
+        // Assignem com a gestor d'entrada la classe InputHandler
+        Gdx.input.setInputProcessor(new InputHandler(this));
 
     }
 
@@ -139,10 +135,6 @@ public class GameScreen implements Screen {
 
         // Recollim les propietats del Batch de l'Stage
         shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
-
-        // Pintem el fons de negre per evitar el "flickering"
-        //Gdx.gl20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        //Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // Inicialitzem el shaperenderer
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
@@ -254,14 +246,24 @@ public class GameScreen implements Screen {
                 break;
                 // NUEVO ESTADO 'PAUSE'
             case PAUSED:
-                textLayout.setText(AssetManager.font, "Paused");
-                //LLAMADO AL MÉTODO PAUSE PARA PARAR TODO EL PROGRAMA
+                textLayout.setText(AssetManager.font, "Pause");
+                //LLAMADO AL MÉTODO PAUSE PARA PARAR
                 updatePaused(delta);
                 break;
         }
 
         //drawElements();
 
+    }
+
+
+    // MÉTODO PARA INVOCAR LA PAUSE
+    private void updatePaused(float delta){
+        stage.act(delta);
+        batch.begin();
+        //DIBUJAMOS LA ETIQUETA
+        AssetManager.font.draw(batch, textLayout, (Settings.GAME_WIDTH / 2) - textLayout.width / 2, (Settings.GAME_HEIGHT / 2) - textLayout.height / 2);
+        batch.end();
     }
 
     private void updateReady() {
@@ -274,14 +276,9 @@ public class GameScreen implements Screen {
 
     }
 
-    // MÉTODO PARA INVOCAR LA PAUSE
-    private void updatePaused(float delta){
-        stage.act(delta);
-        batch.begin();
-        //DIBUJAMOS LA ETIQUETA
-        AssetManager.font.draw(batch, textLayout, (Settings.GAME_WIDTH / 2) - textLayout.width / 2, (Settings.GAME_HEIGHT / 2) - textLayout.height / 2);
-        batch.end();
-    }
+
+
+
 
     private void updateRunning(float delta) {
         stage.act(delta);
@@ -289,13 +286,12 @@ public class GameScreen implements Screen {
         if (scrollHandler.collides(santa)) {
             // Si hi ha hagut col·lisió: Reproduïm l'explosió i posem l'estat a GameOver
             AssetManager.explosionSound.play();
-            //stage.getRoot().findActor("santa").remove();
             stage.getRoot().findActor("santa").remove();
             textLayout.setText(AssetManager.font, "Game Over :'(");
             currentState = GameState.GAMEOVER;
         }
 
-        // VERIFICA COLISIONES DEL
+        // VERIFICA COLISIONES DEL FUEGO
         if(fires.size() > 0) {
 
             for(Fire i : fires){
@@ -306,8 +302,8 @@ public class GameScreen implements Screen {
                     score += 30;
                     text.setText("Score + Bonus : " + score);
                     scrollHandler.getBonus(bonn);
-                    scrollHandler.addNewBonus(bonn);
-                    scrollHandler.reset();
+                    //scrollHandler.addNewBonus(bonn);
+                   //scrollHandler.reset();
                 }
 
                 if (bonni != null){
@@ -315,21 +311,18 @@ public class GameScreen implements Screen {
                     score += 50;
                     text.setText("Score + Bonus: " + score );
                     scrollHandler.getBonusB(bonni);
-                    scrollHandler.addNewBonusB(bonni);
-                    scrollHandler.reset();
+                    //scrollHandler.addNewBonusB(bonni);
+                    //scrollHandler.reset();
                 }
                 Zombie zombie = scrollHandler.collides(i);
                 if(zombie != null){
                     AssetManager.explosionSound.play();
                     score += 10;
                     text.setText("Score : " + score);
-                    explosion.add(new Explosion(AssetManager.explosionAnim, (zombie.getX() + zombie.getWidth() / 2) - 32, zombie.getY() + zombie.getHeight() / 2 - 32, 64f, 64f, delta));
+                    //explosion.add(new Explosion(AssetManager.explosionAnim, (zombie.getX() + zombie.getWidth() / 2) - 32, zombie.getY() + zombie.getHeight() / 2 - 32, 64f, 64f, delta));
                     fires.remove(i);
                     i.remove();
                     scrollHandler.killerZombie(zombie);
-                    scrollHandler.addNewZombie(zombie);
-                    // REINICIA EL ELEMENTO
-                    scrollHandler.reset();
                     break;
                 }
 
@@ -338,6 +331,8 @@ public class GameScreen implements Screen {
         }
 
     }
+
+
 
 
     private void updateGameOver(float delta) {
@@ -352,6 +347,8 @@ public class GameScreen implements Screen {
         explosionTime += delta;
 
     }
+
+
 
     public void reset() {
 
@@ -425,18 +422,49 @@ public class GameScreen implements Screen {
         switch (currentState) {
             case PAUSED:
                 // CONDICIONAMOS EL VOLUMEN A LA PAUSA
-                AssetManager.music.setVolume(0.03f);
-                hidePositions();
-                santa.startPause();
-                scrollHandler.setPause();
+                //stage.getRoot().findActor("pause");
 
+                AssetManager.music.setVolume(0.01f);
+                //hidePositions();
+                santa.startPause();
+
+                scrollHandler.setPaused();
+
+
+                break;
+            case RUNNING:
+
+                if(this.currentState != GameState.PAUSED){
+                   // stage.getRoot().findActor("pause");
+                    AssetManager.music.setVolume(0.3f);
+                    //showPositions();
+
+                    santa.stopPause();
+                    scrollHandler.stopPaused();
+                    Fire fire = new Fire(santa.getX() + santa.getWidth(), santa.getY() + santa.getHeight()/2, 9, 2, Settings.SPACECRAFT_VELOCITY * 2);
+                    stage.getRoot().addActor(fire);
+                    fires.add(fire);
+                    AssetManager.explosionSound.play();
+
+                    currentState = GameState.RUNNING;
+                }
+
+                break;
+            case READY :
+                break;
         }
-        this.currentState = GameState.RUNNING;
-        Fire fire = new Fire(santa.getX() + santa.getWidth(), santa.getY() + santa.getHeight()/2, 9, 2, Settings.SPACECRAFT_VELOCITY * 2);
-        stage.getRoot().addActor(fire);
-        fires.add(fire);
-        AssetManager.explosionSound.play();
+        this.currentState = currentState;
+
     }
 
+    private void hidePositions() {
+        stage.getRoot().findActor("pause").setVisible(false);
+        //stage.getRoot().findActor("laserButton").setVisible(false);
+    }
+
+    private void showPositions() {
+        stage.getRoot().findActor("pause").setVisible(true);
+        //stage.getRoot().findActor("laserButton").setVisible(true);
+    }
 
 }

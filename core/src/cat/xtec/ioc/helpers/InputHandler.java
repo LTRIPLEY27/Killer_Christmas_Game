@@ -53,22 +53,30 @@ public class InputHandler implements InputProcessor {
                 // Si fem clic comencem el joc
                 screen.setCurrentState(GameScreen.GameState.RUNNING);
                 break;
+                // SALE DEL PAUSE EMITIDO POR EL ACTOR Y RETORNA LA ACCIÓN
+            case PAUSED:
+                screen.setCurrentState(GameScreen.GameState.RUNNING);
+                break;
             case RUNNING:
                 previousY = screenY;
-
+                // DECLARACIÓN PARA EL PAUSE Y PLAY DEL JUEGO
                 stageCoord = stage.screenToStageCoordinates(new Vector2(screenX, screenY));
                 Actor actorHit = stage.hit(stageCoord.x, stageCoord.y, true);
-                //if (actorHit != null) {
+                if (actorHit != null) {
 
-                    //switch (actorHit.getName()){
-                        //case "santa":
+                    switch (actorHit.getName()){
+                        case "santa":
                             screen.setCurrentState(GameScreen.GameState.RUNNING);
-                            //break;
-                   // }
+                            break;
+                        case "pause" :
+                            screen.setCurrentState(GameScreen.GameState.PAUSED);
+                            break;
+                   }
                    // Gdx.app.log("HIT", actorHit.getName());
 
-               // }
+                }
                 break;
+
             // Si l'estat és GameOver tornem a iniciar el joc
             case GAMEOVER:
                 screen.reset();

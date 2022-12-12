@@ -33,4 +33,5 @@ public class Settings {
     public static final int SCOREB_SPEED = -200;
 
 
+    public static final int BUTTON_GAP = Math.round(GAME_WIDTH * 0.025f);
 }

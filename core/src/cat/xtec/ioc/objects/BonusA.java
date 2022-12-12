@@ -4,8 +4,9 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction;
-import com.badlogic.gdx.scenes.scene2d.actions.RotateByAction;
 
 import java.util.Random;
 
@@ -17,11 +18,14 @@ public class BonusA extends  Scrollable {
 
     private Circle isaBonus;
 
-    //Random r;
-
     int bonusCounter;
 
     private float runTime = 0;
+
+    // ATRIBUTOS DEL PAUSE
+    private boolean paused;
+    private Action pauseAction;
+    private RepeatAction repeat;
 
     public BonusA(float x, float y, float width, float height, float velocity) {
         super(x, y, width, height, velocity);
@@ -34,20 +38,22 @@ public class BonusA extends  Scrollable {
 
         setOrigin();
 
-        // Rotacio
-        RotateByAction rotateAction = new RotateByAction();
-        rotateAction.setAmount(-90f);
-        rotateAction.setDuration(0.2f);
+        paused = false;
 
-        // Accio de repetició
-        RepeatAction repeat = new RepeatAction();
+        /* Rotacio
+       /* RotateByAction rotateAction = new RotateByAction();
+        rotateAction.setAmount(-90f);
+        rotateAction.setDuration(0.2f);*/
+
+        /* Accio de repetició
+        repeat = new RepeatAction();
         repeat.setAction(rotateAction);
-        repeat.setCount(RepeatAction.FOREVER);
+        repeat.setCount(RepeatAction.FOREVER);*/
 
         // Equivalent:
-        // this.addAction(Actions.repeat(RepeatAction.FOREVER, Actions.rotateBy(-90f, 0.2f)));
+         this.addAction(Actions.repeat(RepeatAction.FOREVER, Actions.rotateBy(-90f, 0.2f)));
 
-        this.addAction(repeat);
+        //this.addAction(repeat);
     }
 
     public void setOrigin() {
@@ -58,11 +64,14 @@ public class BonusA extends  Scrollable {
 
     @Override
     public void act(float delta) {
-        super.act(delta);
+        if(!paused){
+            super.act(delta);
 
-        // Actualitzem el cercle de col·lisions (punt central de l'asteroid i el radi.
-        isaBonus.set(position.x + width / 2.0f, position.y + width / 2.0f, width / 2.0f);
-        runTime += delta; // aumenta el runtime
+            // Actualitzem el cercle de col·lisions (punt central de l'asteroid i el radi.
+            isaBonus.set(position.x + width / 2.0f, position.y + width / 2.0f, width / 2.0f);
+            runTime += delta; // aumenta el runtime
+        }
+
     }
 
     @Override
@@ -111,4 +120,19 @@ public class BonusA extends  Scrollable {
 
         return false;
     }*/
+
+    public void startPause() {
+        paused = true;
+        pauseAction = Actions.repeat(RepeatAction.FOREVER, Actions.sequence(Actions.alpha(0.5f, 0.2f), Actions.alpha(1.0f, 0.2f)));
+        this.addAction(pauseAction);
+        //this.removeAction(repeat);
+    }
+
+
+    public void stopPause() {
+        paused = false;
+        //this.clearActions();
+        //this.addAction(repeat);
+        this.removeAction(pauseAction);
+    }
 }

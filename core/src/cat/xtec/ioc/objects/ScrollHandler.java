@@ -42,8 +42,6 @@ public class ScrollHandler extends Group {
         r = new Random();
 
         // array de elementos
-        // ZOMBIES = 20, BONUS A = 10 Y BONUS B = 5
-        numAsteroids = 20;
         bonusACount = 10;
         bonusBCount = 5;
 
@@ -59,7 +57,7 @@ public class ScrollHandler extends Group {
         bonusB = new ArrayList<BonusB>();
 
 
-
+        /*
 
         // Definim una mida aleatòria entre el mínim i el màxim
         float newSize = Methods.randomFloat(Settings.MIN_ASTEROID, Settings.MAX_ASTEROID) * 34;
@@ -110,8 +108,39 @@ public class ScrollHandler extends Group {
             bonus2 = new BonusB(bonusB.get(bonusB.size() - 1).getTailX() + Settings.ASTEROID_GAP, r.nextInt(Settings.GAME_HEIGHT - (int) newSizeCoin), newSizeCoin, newSizeCoin, Settings.SCOREB_SPEED);
             bonusB.add(bonus2);
             addActor(bonus2);
-        }
+        }*/
+
+        addNewBonus();
+        addNewBonusB();
+        addNewZombie();
     }
+
+    //public  void addNewBonus(BonusA bonus){
+    public  void addNewBonus(){
+        float newSizeCoin = Methods.randomFloat(Settings.MIN_COIN, Settings.MAX_COIN) * 42;
+        BonusA bonus1 = new BonusA(Settings.GAME_WIDTH, r.nextInt(Settings.GAME_HEIGHT - (int) newSizeCoin), newSizeCoin, newSizeCoin, Settings.SCOREA_SPEED);
+        bonusA.add(bonus1);
+        addActor(bonus1);
+    }
+
+    //public  void addNewBonusB(BonusB bonus){
+    public  void addNewBonusB(){
+        float newSizeCoin = Methods.randomFloat(Settings.MIN_COIN, Settings.MAX_COIN) * 42;
+        BonusB bonus2 = new BonusB(Settings.GAME_WIDTH, r.nextInt(Settings.GAME_HEIGHT - (int) newSizeCoin), newSizeCoin, newSizeCoin, Settings.SCOREB_SPEED);
+        bonusB.add(bonus2);
+        addActor(bonus2);
+    }
+
+    //public  void addNewZombie(Zombie zombie){
+    public  void addNewZombie(){
+        // Definim una mida aleatòria entre el mínim i el màxim
+        float newSize = Methods.randomFloat(Settings.MIN_ASTEROID, Settings.MAX_ASTEROID) * 34;
+        // Afegim el primer Zombie a l'Array i al grup
+        Zombie zombie = new Zombie(Settings.GAME_WIDTH, r.nextInt(Settings.GAME_HEIGHT - (int) newSize), newSize, newSize, Settings.ASTEROID_SPEED);
+        zombies.add(zombie);
+        addActor(zombie);
+    }
+
 
     @Override
     public void act(float delta) {
@@ -129,11 +158,13 @@ public class ScrollHandler extends Group {
 
             Zombie zombie = zombies.get(i);
             if (zombie.isLeftOfScreen() ) {
-                if (i == 0) {
+                /*if (i == 0) {
                     zombie.reset(zombies.get(zombies.size() - 1).getTailX() + Settings.ASTEROID_GAP);
                 } else {
                    zombie.reset(zombies.get(i - 1).getTailX() + Settings.ASTEROID_GAP);
-                }
+                }*/
+
+                reset();
             }
         }
 
@@ -142,11 +173,12 @@ public class ScrollHandler extends Group {
 
             BonusA bonus1 = bonusA.get(i);
             if (bonus1.isLeftOfScreen()) {
-                if (i == 0) {
-                    bonus1.reset(bonusA.get(bonusA.size() - 1).getTailX() + Settings.COIN_GAP);
+                /*if (i == 0) {
+                    /bonus1.reset(bonusA.get(bonusA.size() - 1).getTailX() + Settings.COIN_GAP);
                 } else {
-                    bonus1.reset(bonusA.get(i - 1).getTailX() + Settings.COIN_GAP);
-                }
+                   bonus1.reset(bonusA.get(i - 1).getTailX() + Settings.COIN_GAP);
+                }*/
+                reset();
             }
         }
 
@@ -154,13 +186,28 @@ public class ScrollHandler extends Group {
 
             BonusB bonus2 = bonusB.get(i);
             if (bonus2.isLeftOfScreen()) {
-                if (i == 0) {
+                /*if (i == 0) {
                     bonus2.reset(bonusA.get(bonusA.size() - 1).getTailX() + Settings.COIN_GAP);
                 } else {
                     bonus2.reset(bonusA.get(i - 1).getTailX() + Settings.COIN_GAP);
-                }
+                }*/
+                reset();
             }
         }
+
+
+        // paused
+        if(paused) creation = 0;
+
+        if( creation > 1f && zombies.size() < 3 || bonusA.size() < 2 || bonusB.size() < 1){
+            addNewZombie();
+            addNewBonus();
+            addNewBonusB();
+            creation = 0;
+        } else {
+            creation += delta;
+        }
+
     }
 
     public boolean collides(KillerSanta nau) {
@@ -239,9 +286,9 @@ public class ScrollHandler extends Group {
 
         ///***************************************************************** coentado hoy marroc gano
         // Posem el primer asteroid fora de la pantalla per la dreta
-        //zombies.get(0).reset(Settings.GAME_WIDTH);
-        //bonusA.get(0).reset(Settings.GAME_WIDTH);
-        //bonusB.get(0).reset(Settings.GAME_WIDTH);
+        zombies.get(0).reset(Settings.GAME_WIDTH);
+        bonusA.get(0).reset(Settings.GAME_WIDTH);
+        bonusB.get(0).reset(Settings.GAME_WIDTH);
         // Calculem les noves posicions de la resta d'zombies.
         for (int i = 1; i < zombies.size(); i++) {
 
@@ -278,17 +325,7 @@ public class ScrollHandler extends Group {
         bonus.remove();
     }
 
-    public  void addNewBonus(BonusA bonus){
-        bonusA.add(bonus);
-    }
 
-    public  void addNewBonusB(BonusB bonus){
-        bonusB.add(bonus);
-    }
-
-    public  void addNewZombie(Zombie zombie){
-        zombies.add(zombie);
-    }
 
     public ArrayList<Zombie> getAsteroids() {
         return zombies;
@@ -299,5 +336,43 @@ public class ScrollHandler extends Group {
 
     public ArrayList<BonusB> getCoinsB() {
         return bonusB;
+    }
+
+    public void setPaused(){
+        paused = true;
+        bg.startPaused();
+        bg_back.startPaused();
+
+        // ponemos en pause a cada elemento contenido del array
+        for(Zombie i : zombies){
+            i.startPause();
+        }
+
+        for(BonusA i : bonusA){
+            i.startPause();
+        }
+
+        for(BonusB i : bonusB){
+            i.startPause();
+        }
+    }
+
+    public void stopPaused(){
+        paused = false;
+
+        bg.stopPause();
+        bg_back.stopPause();
+
+        for(Zombie i : zombies){
+            i.stopPause();
+        }
+
+        for(BonusA i : bonusA){
+            i.stopPause();
+        }
+
+        for(BonusB i : bonusB){
+            i.stopPause();
+        }
     }
 }
