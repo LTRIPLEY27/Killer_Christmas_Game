@@ -77,8 +77,7 @@ public class GameScreen implements Screen {
 
     // VARIABLE PREFERENCES PARA LA PERSISTENCIA DEL SCORE
 
-    public  static Preferences maxScore;
-
+    public static Preferences maxScore = Gdx.app.getPreferences("scoreMax");
 
     public GameScreen(Batch prevBatch, Viewport prevViewport) {
 
@@ -120,8 +119,6 @@ public class GameScreen implements Screen {
 
         // INDICACIÓN DE LA POSICIÓN DEL PAUSE
         paused.setPosition(200, -10);
-
-        //int prefScore = maxScore.getInteger("score", 2500);
 
         // PUNTAJE TEXT
         textStyle = new Label.LabelStyle(AssetManager.font, null);
@@ -281,6 +278,10 @@ public class GameScreen implements Screen {
     private void updateRunning(float delta) {
         stage.act(delta);
 
+
+        maxScore.putInteger("score", 2500);
+        maxScore.flush();
+
         if (scrollHandler.collides(santa)) {
             // Si hi ha hagut col·lisió: Reproduïm l'explosió i posem l'estat a GameOver
             AssetManager.explosionSound.play();
@@ -296,6 +297,11 @@ public class GameScreen implements Screen {
                 textLayout.setText(AssetManager.font, "Game Over :'(\nGREAT!!!\nYou score is!!!" + score);
             }
 
+            // ÚNICAMENTE DE ROMPER EL RECORD SETEAREMOS EL VALOR DE LA PERSISTENCIA
+            if(score > 2500){
+                maxScore.putInteger("score", score);
+                maxScore.flush();
+            }
 
             currentState = GameState.GAMEOVER;
         }

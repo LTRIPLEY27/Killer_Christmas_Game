@@ -46,8 +46,10 @@ public class SplashScreen implements Screen {
         stage.addActor(new Image(AssetManager.background));
 
         // Creem l'estil de l'etiqueta i l'etiqueta
+
+        // ADICIÓN DEL SCORE PERSISTENCIA
         textStyle = new Label.LabelStyle(AssetManager.font, null);
-        textLbl = new Label("Zombie's Christmas Carol", textStyle);
+        textLbl = new Label("Zombie's Christmas Carol\nRecord Score  " + GameScreen.maxScore.getInteger("score"), textStyle);
 
         // Creem el contenidor necessari per aplicar-li les accions
         Container container = new Container(textLbl);
