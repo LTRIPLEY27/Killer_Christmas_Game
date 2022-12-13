@@ -1,6 +1,7 @@
 package cat.xtec.ioc.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -74,6 +75,9 @@ public class GameScreen implements Screen {
 
     private int score = 0;
 
+    // VARIABLE PREFERENCES PARA LA PERSISTENCIA DEL SCORE
+
+    public  static Preferences maxScore;
 
 
     public GameScreen(Batch prevBatch, Viewport prevViewport) {
@@ -117,13 +121,14 @@ public class GameScreen implements Screen {
         // INDICACIÓN DE LA POSICIÓN DEL PAUSE
         paused.setPosition(200, -10);
 
-        //paused.addAction(this);
-        stage.addActor(paused);
+        //int prefScore = maxScore.getInteger("score", 2500);
 
         // PUNTAJE TEXT
         textStyle = new Label.LabelStyle(AssetManager.font, null);
         text = new Label(("Points :") + score, textStyle);
 
+        //POSICION DE ACTORES EN PANTALLA
+        stage.addActor(paused);
         stage.addActor(text);
         currentState = GameState.READY;
         // Assignem com a gestor d'entrada la classe InputHandler
@@ -280,7 +285,18 @@ public class GameScreen implements Screen {
             // Si hi ha hagut col·lisió: Reproduïm l'explosió i posem l'estat a GameOver
             AssetManager.explosionSound.play();
             stage.getRoot().findActor("santa").remove();
-            textLayout.setText(AssetManager.font, "Game Over :'(");
+
+            // VERIFICACON Y MENSAJE DEL SCORE SEGÚN CADA CASO
+            // PARTE 4 (HIGH SCORE)
+            if(score < 1000){
+                textLayout.setText(AssetManager.font, "Game Over :'(\nPrinciant\nyou Score is!!!" + score);
+            } if (score >= 1000 && score < 1500){
+                textLayout.setText(AssetManager.font, "Game Over :'(\nNot too bad\nyou Score is!!!" + score);
+            }if(score >= 1500){
+                textLayout.setText(AssetManager.font, "Game Over :'(\nGREAT!!!\nYou score is!!!" + score);
+            }
+
+
             currentState = GameState.GAMEOVER;
         }
 
@@ -340,6 +356,8 @@ public class GameScreen implements Screen {
 
     public void reset() {
 
+        score = 0;
+        text.setText("Score " + score );
         // Posem el text d'inici
         textLayout.setText(AssetManager.font, "Are you\nready to run for your life?");
         // Cridem als restart dels elements.
