@@ -63,6 +63,7 @@ public class ScrollHandler extends Group {
         BonusA bonus1 = new BonusA(Settings.GAME_WIDTH, r.nextInt(Settings.GAME_HEIGHT - (int) newSizeCoin), newSizeCoin, newSizeCoin, Settings.SCOREA_SPEED);
         BonusB bonus2 = new BonusB(Settings.GAME_WIDTH, r.nextInt(Settings.GAME_HEIGHT - (int) newSizeCoin), newSizeCoin, newSizeCoin, Settings.SCOREB_SPEED);
 
+        // DEFINICIÓN DE LOS BONUS A LA PANTALLA
         bonusA.add(bonus1);
         bonusB.add(bonus2);
 
@@ -168,6 +169,7 @@ public class ScrollHandler extends Group {
         // paused
         if(paused) creation = 0;
 
+        // VERIFICA PARA QUE MIESNTRAS TRANSCURRA EL JUEGO VAYAN APARECIENDO LOS CARACTERES DEMANDADOS
         if( creation > 1f && zombies.size() < 3 || bonusA.size() < 1 || bonusB.size() < 1){
             addNewZombie();
             addNewBonus();
@@ -179,6 +181,7 @@ public class ScrollHandler extends Group {
 
     }
 
+    // MANEJO DE LAS COLISIONES CON SANTA
     public boolean collides(KillerSanta nau) {
 
         // Comprovem les col·lisions entre cada asteroid i la nau
@@ -250,7 +253,6 @@ public class ScrollHandler extends Group {
     }
 
 
-    // CHEQUEAR PUES ACÁ PUEDE REVENTAR EL ZOMBIE
     public void reset() {
 
         ///***************************************************************** coentado hoy marroc gano

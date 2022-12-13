@@ -39,10 +39,10 @@ public class KillerSanta extends Actor {
     public KillerSanta(float x, float y, int width, int height) {
 
         // Inicialitzem els arguments segons la crida del constructor
-        //this.width = width;
+
+        //dimensionamos la animación acorde a la pantalla
         this.width = 40;
         this.height = 40;
-        //this.height = height;
         position = new Vector2(x, y);
 
         // Inicialitzem la spacecraft a l'estat normal

@@ -40,20 +40,11 @@ public class BonusA extends  Scrollable {
 
         paused = false;
 
-        /* Rotacio
-       /* RotateByAction rotateAction = new RotateByAction();
-        rotateAction.setAmount(-90f);
-        rotateAction.setDuration(0.2f);*/
-
-        /* Accio de repetició
-        repeat = new RepeatAction();
-        repeat.setAction(rotateAction);
-        repeat.setCount(RepeatAction.FOREVER);*/
 
         // Equivalent:
          this.addAction(Actions.repeat(RepeatAction.FOREVER, Actions.rotateBy(-90f, 0.2f)));
 
-        //this.addAction(repeat);
+
     }
 
     public void setOrigin() {
@@ -84,7 +75,6 @@ public class BonusA extends  Scrollable {
         // La posició serà un valor aleatòri entre 0 i l'alçada de l'aplicació menys l'alçada
         position.y =  new Random().nextInt(Settings.GAME_HEIGHT - (int) height);
 
-        //assetAsteroid = r.nextInt(15);
         bonusCounter = new Random().nextInt(3);
         setOrigin();
     }
@@ -111,28 +101,16 @@ public class BonusA extends  Scrollable {
         return isaBonus;
     }
 
-    //*******  COLISIÓN CON SANTA GENERA EL BONUS
-
-    /*public  boolean collides(KillerSanta kill){
-        if(position.x <= kill.getX() + kill.getWidth()){
-            return (Intersector.overlaps(isaBonus, kill.getCollisionRect()));
-        }
-
-        return false;
-    }*/
-
+    //*******  MÉTODOS DEL PAUSED A SER INVOCADOS
     public void startPause() {
         paused = true;
         pauseAction = Actions.repeat(RepeatAction.FOREVER, Actions.sequence(Actions.alpha(0.5f, 0.2f), Actions.alpha(1.0f, 0.2f)));
         this.addAction(pauseAction);
-        //this.removeAction(repeat);
     }
 
 
     public void stopPause() {
         paused = false;
-        //this.clearActions();
-        //this.addAction(repeat);
         this.removeAction(pauseAction);
     }
 }

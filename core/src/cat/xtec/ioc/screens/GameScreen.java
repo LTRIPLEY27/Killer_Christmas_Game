@@ -98,10 +98,8 @@ public class GameScreen implements Screen {
 
         // Afegim els actors a l'stage
         stage.addActor(scrollHandler);
-        //stage.addActor(spacecraft);
         stage.addActor(santa);
         // Donem nom a l'Actor
-        //spacecraft.setName("spacecraft");
         santa.setName("santa");
 
         fires = new ArrayList<Fire>();
@@ -178,6 +176,9 @@ public class GameScreen implements Screen {
             shapeRenderer.circle(zombie.getX() + zombie.getWidth() / 2, zombie.getY() + zombie.getWidth() / 2, zombie.getWidth() / 2);
         }
 
+        //***************
+
+                //  renderrización de las coins
         //////////////////////////////////////////////////////
         for (int i = 0; i < bonus1.size(); i++) {
 
@@ -278,7 +279,7 @@ public class GameScreen implements Screen {
     private void updateRunning(float delta) {
         stage.act(delta);
 
-
+        // DECLARACIÓN DEL MÁXIMO VALOR INICIAL A ROMPER DE SCORE
         maxScore.putInteger("score", 2500);
         maxScore.flush();
 
@@ -288,7 +289,6 @@ public class GameScreen implements Screen {
             stage.getRoot().findActor("santa").remove();
 
             // VERIFICACON Y MENSAJE DEL SCORE SEGÚN CADA CASO
-            // PARTE 4 (HIGH SCORE)
             if(score < 1000){
                 textLayout.setText(AssetManager.font, "Game Over :'(\nPrinciant\nyou Score is!!!" + score);
             } if (score >= 1000 && score < 1500){
@@ -298,7 +298,7 @@ public class GameScreen implements Screen {
             }
 
             // ÚNICAMENTE DE ROMPER EL RECORD SETEAREMOS EL VALOR DE LA PERSISTENCIA
-            if(score > 2500){
+            if(score > maxScore.getInteger("score")){
                 maxScore.putInteger("score", score);
                 maxScore.flush();
             }
@@ -308,23 +308,27 @@ public class GameScreen implements Screen {
 
         // VERIFICA COLISIONES DEL FUEGO
         if(fires.size() > 0) {
-
+            // RECORREMOS EL ARRAY DE DISPAROS EJECUTADOS Y POR CADA UNO VALORIZAMOS SI HA ACERTADO CON UNO DE LOS SIGUEINTES PERSONAJES
             for(Fire i : fires){
                 BonusA bonn = scrollHandler.collidesOk(i);
                 BonusB bonni = scrollHandler.collidesOkB(i);
+
+                // SI EL FUEGO HA COLISIONADO CON UN BONUS ENTRAMOS Y ACTUALIZAMOS
                 if (bonn != null){
                     AssetManager.bonusSound.play();
                     score += 30;
                     text.setText("Score + Bonus : " + score);
                     scrollHandler.getBonus(bonn);
                 }
-
+                // SI EL FUEGO HA COLISIONADO CON UN BONUS ENTRAMOS Y ACTUALIZAMOS
                 if (bonni != null){
                     AssetManager.bonusSound.play();
                     score += 50;
                     text.setText("Score + Bonus: " + score );
                     scrollHandler.getBonusB(bonni);
                 }
+
+                // SI EL FUEGO HA COLISIONADO CON UN ZOMBIE LLAMAMOS AL MÉTODO DE SCROLLHANDLER Y REMOVEMOS DE LA PANTALLA
                 Zombie zombie = scrollHandler.collides(i);
                 if(zombie != null){
                     AssetManager.explosionSound.play();
@@ -362,6 +366,7 @@ public class GameScreen implements Screen {
 
     public void reset() {
 
+        // COLOCAMOS EL SCORE EN 0 POR CADA RESET
         score = 0;
         text.setText("Score " + score );
         // Posem el text d'inici
@@ -429,6 +434,13 @@ public class GameScreen implements Screen {
         return currentState;
     }
 
+
+    // VALIDAMOS LOS CURRENTSTATE SEGÚN CADA ESTADO DEL JUEGO
+
+    /*
+    * PAUSE : LLAMA A LOS MÉTODOS 'SETPAUSED' Y 'HIDEPOSITIONS'
+    * RUNNING : QUITAMOS LA PAUSA, EN CASO DE HACER SIDO PRESONADA, Y VAMOS VALORIZANDO SEGUN EL COMPORTAMIENTO
+    * */
     public void setCurrentState(GameState currentState) {
 
         switch (currentState) {
@@ -441,8 +453,6 @@ public class GameScreen implements Screen {
                 santa.startPause();
 
                 scrollHandler.setPaused();
-
-
                 break;
             case RUNNING:
 
@@ -469,11 +479,14 @@ public class GameScreen implements Screen {
 
     }
 
+
+    // MÉTODOS PARA ESCONDER LOS ELEMENTOS : 'PAUSED' Y SCORE
     private void hidePositions() {
         stage.getRoot().findActor("pause").setVisible(false);
         text.setText("");
     }
 
+    // MÉTODOS PARA MOSTRAR  LOS ELEMENTOS : 'PAUSED' Y SCORE
     private void showPositions() {
         stage.getRoot().findActor("pause").setVisible(true);
         text.setText("Score : " + score);

@@ -39,7 +39,6 @@ public class Zombie extends Scrollable {
 
         /* Accions */
         r = new Random();
-        //assetAsteroid = r.nextInt(15);
         assetAsteroid = r.nextInt(3);
 
         setOrigin();
@@ -126,12 +125,10 @@ public class Zombie extends Scrollable {
         paused = true;
         pauseAction = Actions.repeat(RepeatAction.FOREVER, Actions.sequence(Actions.alpha(0.5f, 0.2f), Actions.alpha(1.0f, 0.2f)));
         this.addAction(pauseAction);
-        //this.removeAction(repeat);
     }
     public void stopPause() {
         paused = false;
         this.clearActions();
-        //this.addAction(repeat);
         this.removeAction(repeat);
     }
 }

@@ -43,7 +43,7 @@ public class AssetManager {
 
     public static void load() {
         // Carreguem les textures i li apliquem el mètode d'escalat 'nearest'
-        //sheet = new Texture(Gdx.files.internal("sheet.png"));
+
         sheet = new Texture(Gdx.files.internal("image_sheet.png"));
         sheet.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
 
@@ -151,16 +151,10 @@ public class AssetManager {
         bonu2 = new Animation(0.4f, bonus2);
         bonu2.setPlayMode(Animation.PlayMode.LOOP);
 
-        // Creem l'animació de l'asteroid i fem que s'executi contínuament en sentit anti-horari
 
-       /* for(int i = 0; i < zombies.length; i++){
-            zombie = new Animation(0.04f, zombies);
-            zombie.setPlayMode(Animation.PlayMode.LOOP_REVERSED);
-        }*/
         zombie = new Animation(0.04f, zombies);
         zombie.setPlayMode(Animation.PlayMode.LOOP_REVERSED);
-        // Creem els 16 estats de l'explosió
-        //explosion = new TextureRegion[4];
+
         explosion = new TextureRegion[16];
 
         // Carreguem els 16 estats de l'explosió

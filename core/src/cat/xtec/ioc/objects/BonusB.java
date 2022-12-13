@@ -18,8 +18,6 @@ import cat.xtec.ioc.utils.Settings;
 public class BonusB extends  Scrollable{
     private Circle isaBonus;
 
-    //Random r;
-
     int bonusCounter;
 
     private float runTime = 0;
@@ -39,20 +37,9 @@ public class BonusB extends  Scrollable{
         setOrigin();
 
         paused = false;
-        // Rotacio
-       /* RotateByAction rotateAction = new RotateByAction();
-        rotateAction.setAmount(-90f);
-        rotateAction.setDuration(0.2f);
-
-        // Accio de repetició
-        RepeatAction repeat = new RepeatAction();
-        repeat.setAction(rotateAction);
-        repeat.setCount(RepeatAction.FOREVER);*/
-
         // Equivalent:
          this.addAction(Actions.repeat(RepeatAction.FOREVER, Actions.rotateBy(-90f, 0.2f)));
 
-        //this.addAction(repeat);
     }
 
     public void setOrigin() {
@@ -82,7 +69,6 @@ public class BonusB extends  Scrollable{
         // La posició serà un valor aleatòri entre 0 i l'alçada de l'aplicació menys l'alçada
         position.y =  new Random().nextInt(Settings.GAME_HEIGHT - (int) height);
 
-        //assetAsteroid = r.nextInt(15);
         bonusCounter = new Random().nextInt(3);
         setOrigin();
     }
@@ -95,6 +81,7 @@ public class BonusB extends  Scrollable{
         batch.draw((TextureRegion) AssetManager.bonu2.getKeyFrame(runTime, true), this.position.x, this.position.y, width, height);
     }
 
+    // PART 5BONUS
     // verifica si santa ha cogido o no el coin
     public boolean collides(Fire fire) {
 
@@ -109,16 +96,15 @@ public class BonusB extends  Scrollable{
         return isaBonus;
     }
 
+    //*******  MÉTODOS DEL PAUSED A SER INVOCADOS   PART 4
     public void startPause() {
         paused = true;
         pauseAction = Actions.repeat(RepeatAction.FOREVER, Actions.sequence(Actions.alpha(0.5f, 0.2f), Actions.alpha(1.0f, 0.2f)));
         this.addAction(pauseAction);
-        //this.removeAction(repeat);
     }
     public void stopPause() {
         paused = false;
         this.clearActions();
-        //this.addAction(repeat);
         this.removeAction(pauseAction);
     }
 }
